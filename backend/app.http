@@ -1,0 +1,50 @@
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+    "u_name": "Nancy Drew",
+    "email": "nancydrew01@gmail.com",
+    "password": "1234nd"
+}
+
+
+
+###
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "nancydrew01@gmail.com",
+    "password": "1234nd"
+}
+
+###
+POST http://localhost:3000/api/product
+Content-Type: application/json
+
+{
+    "product_name": "SonyBravia",
+    "product_description": "cool screen blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    "price": 300,
+    "product_quantity": 3,
+    "product_category": "Cosmetics",
+    "product_image": "https://imgs.search.brave.com/JCAbYNrwsZ5K_xRKYYs1OGcOQBNosEPViX-20Ua8GIk/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9waXNj/ZXMuYmJ5c3RhdGlj/LmNvbS9pbWFnZTIv/QmVzdEJ1eV9VUy9p/bWFnZXMvcHJvZHVj/dHMvNjUwMS82NTAx/NTQzX3NkLmpwZztt/YXhIZWlnaHQ9MjAw/O21heFdpZHRoPTMw/MA"
+}
+
+
+###
+GET http://localhost:3000/api/product
+
+
+###
+GET http://localhost:3000/api/product?PageNumber=5?PageSize=1
+
+
+###
+DELETE http://localhost:3000/api/product/0c6e7662-0355-4533-9376-35044b9ced3b
+
+
+
+###
+PATCH  http://localhost:3000/api/product
+Content-Type: application/json
