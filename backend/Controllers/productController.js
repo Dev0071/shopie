@@ -148,6 +148,36 @@ export const deleteProduct = async(req,res) => {
 
 export const editProduct = async(req,res) =>{
     try {
+        const {product_id} = req.params;
+        const {product_name, product_description, price,product_quantity, product_image, product_category} = req.body
+
+
+        const response = await DB.exec('usp_EditProduct',{product_id,
+            product_name, product_description,
+            price,product_quantity,
+            product_image, product_category});
+        
+        if(response.rowsAffected[0] == 0){
+                return res.status(404).json({
+                    status:'error',
+                  'message': 'Product not found'
+                 })
+        }
+        else{
+            const response = await DB.exec('usp_GetProductById',{product_id});
+
+
+            return res.status(200).json({
+                status:'success',
+               'message': 'Product Deleted Successfully'
+               
+        })
+
+        }
+       
+        
+
+        
         
     } catch (error) {
         

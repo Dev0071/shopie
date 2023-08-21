@@ -34,7 +34,8 @@ BEGIN
 END;
 
 GO
-CREATE PROCEDURE usp_GetProducts
+
+CREATE OR ALTER PROCEDURE usp_GetProducts
     @PageSize INT,
     @PageNumber INT
 AS
@@ -43,10 +44,10 @@ BEGIN
     SET @Offset = (@PageNumber - 1) * @PageSize;
 
     SELECT *
-    FROM Product
+    FROM Product WHERE product_quantity>0
     ORDER BY product_id
     OFFSET @Offset ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
+    FETCH NEXT @PageSize ROWS ONLY ;
 END;
 
 GO
