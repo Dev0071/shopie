@@ -73,3 +73,52 @@ export const getCartItems = async(req,res)=>{
     }
 
 }
+
+export const emptyCart = async(req,res)=>{
+    try{
+    const user_id = req.session.user_id || null;
+    const session_id = req.sessionID;
+
+    await DB.exec('usp_EmptyCart',{user_id, session_id});
+        return res.status(200).json({
+            status:'success',
+            message: 'Products were removed from cart'
+        })
+    
+
+} catch (error) {
+    
+    return res.status(500).json({
+        status: 'error',
+        message: 'Error Removing Products From Cart',
+    })      
+}
+}
+
+
+export const removeItemFromCart = async(req,res)=>{
+    try{
+    const user_id = req.session.user_id || null;
+    const session_id = req.sessionID;
+    const product_id = req.params.product_id;
+    const {quantity} = req.body
+    console.log(quantity)
+
+    const response = await DB.exec('usp_RemoveFromCart',{user_id, session_id,product_id, quantity});
+    console.log(response)
+        return res.status(200).json({
+            status:'success',
+            message: 'Product was removed from cart'
+        })
+    
+
+} catch (error) {
+    console.log(error)
+    return res.status(500).json({
+        status: 'error',
+        message: 'Error Removing Product From Cart',
+    })
+        
+}
+
+}

@@ -1,0 +1,104 @@
+CREATE OR ALTER PROCEDURE usp_GetCartItems
+    @user_id VARCHAR(255),
+	@session_id VARCHAR(255)
+AS
+BEGIN
+    IF @user_id IS NULL
+    BEGIN
+        SELECT
+            ac.product_id,
+            ac.quantity,
+            p.product_name,
+            p.price
+        FROM AnonymousCart ac
+        INNER JOIN Product p ON ac.product_id = p.product_id
+        WHERE ac.session_id = @session_id;
+    END
+    ELSE
+    BEGIN
+        SELECT
+            uc.product_id,
+            uc.quantity,
+            p.product_name,
+            p.price
+        FROM UserCart uc
+        INNER JOIN Product p ON uc.product_id = p.product_id
+        WHERE uc.user_id = @user_id;
+    END
+END;
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_TransferAnonymousToUserCart
+    @session_id VARCHAR(255),
+    @user_id VARCHAR(255)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        IF EXISTS (SELECT 1 FROM AnonymousCart WHERE session_id = @session_id)
+        BEGIN
+            DECLARE @product_id VARCHAR(255);
+            DECLARE @quantity INT;
+            DECLARE cart_cursor CURSOR FOR
+            SELECT product_id, quantity
+            FROM AnonymousCart
+            WHERE session_id = @session_id;
+            OPEN cart_cursor;
+            FETCH NEXT FROM cart_cursor INTO @product_id, @quantity;
+
+            WHILE @@FETCH_STATUS = 0
+            BEGIN
+                DECLARE @existing_user_cart INT;
+                SELECT @existing_user_cart = COUNT(*)
+                FROM UserCart
+                WHERE user_id = @user_id AND product_id = @product_id;
+
+                IF @existing_user_cart = 0
+                BEGIN
+                    INSERT INTO UserCart (user_id, product_id, quantity)
+                    VALUES (@user_id, @product_id, @quantity);
+                END
+                ELSE
+                BEGIN
+                    UPDATE UserCart
+                    SET quantity = quantity + @quantity
+                    WHERE user_id = @user_id AND product_id = @product_id;
+                END
+                DELETE FROM AnonymousCart
+                WHERE session_id = @session_id AND product_id = @product_id;
+                FETCH NEXT FROM cart_cursor INTO @product_id, @quantity;
+            END;
+
+            CLOSE cart_cursor;
+            DEALLOCATE cart_cursor;
+        END
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+       
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_EmptyCart
+    @user_id VARCHAR(255),
+    @session_id VARCHAR(255)
+AS
+BEGIN
+    BEGIN
+      
+        IF @user_id IS NULL
+        BEGIN
+            DELETE FROM AnonymousCart WHERE session_id = @session_id;
+        END
+        ELSE
+        BEGIN
+            DELETE FROM UserCart WHERE user_id = @user_id;
+        END
+    END
+END;

@@ -305,3 +305,30 @@ export const uploadImage =  async(req,res)=>{
     }
   
 }
+
+export const searchProduct = async(req,res)=>{
+    try {
+        const { query } = req.params;
+
+        const results = await DB.exec('usp_SearchProducts', { query });
+
+        if(results.rowsAffected[0]==0){
+            return res.status(404).json({
+                status:'error',
+              'message': 'No Products found'
+             })
+        }
+        
+        res.status(200).json({
+             status:'success',
+             products: results.recordset
+             });
+   
+
+        
+    } catch (error) {
+        
+        res.status(500).json({ error: 'Error While Searching' })
+        
+    }
+}
