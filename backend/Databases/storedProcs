@@ -7,6 +7,7 @@ AS
 BEGIN
     INSERT INTO [User] (user_id,u_name, email, password)
     VALUES (@user_id, @u_name,@email, @password);
+    SELECT user_id,u_name,is_admin FROM [User] WHERE user_id=@user_id
 END;
 
 
@@ -35,20 +36,20 @@ END;
 
 GO
 
-CREATE OR ALTER PROCEDURE usp_GetProducts
-    @PageSize INT = NULL,
-    @PageNumber INT = NULL
-AS
-BEGIN
-    DECLARE @Offset INT
-    SET @Offset = (@PageNumber - 1) * @PageSize;
+-- CREATE OR ALTER PROCEDURE usp_GetProducts
+--     @PageSize INT = NULL,
+--     @PageNumber INT = NULL
+-- AS
+-- BEGIN
+--     DECLARE @Offset INT
+--     SET @Offset = (@PageNumber - 1) * @PageSize;
 
-    SELECT *
-    FROM Product
-    ORDER BY product_id
-    OFFSET ISNULL (@Offset,0) ROWS
-    FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
-END;
+--     SELECT *
+--     FROM Product
+--     ORDER BY product_id
+--     OFFSET ISNULL (@Offset,0) ROWS
+--     FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
+-- END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_EditProduct
@@ -81,7 +82,7 @@ CREATE OR ALTER PROCEDURE usp_GetUserByMail
    
 AS
 BEGIN
-	SELECT user_id,email,u_name,password from [User] where email=@email
+	SELECT * from [User] where email=@email
     
 END;
 
@@ -128,4 +129,12 @@ BEGIN
         END
     END
     
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetAllProducts
+AS
+BEGIN
+    SELECT *
+    FROM Product where product_quantity>0 ORDER BY added_at;
 END;

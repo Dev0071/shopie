@@ -25,7 +25,7 @@ export const addToCart = async(req,res)=>{
 
         
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         if(error.number == 50000 && error.message.includes("Insufficient quantity"))
         {
             return res.status(404).json({
@@ -47,14 +47,29 @@ export const getCartItems = async(req,res)=>{
         const user_id = req.session.user_id || null;
         const session_id = req.sessionID;
 
-        const cartItems = await DB.exec('usp_GetCartItems',{user_id, session_id});
+        const response = await DB.exec('usp_GetCartItems',{user_id, session_id});
 
+        const products = response.recordset;
 
+        if(products.length > 0){
+            return res.status(200).json({
+                status:'success',
+                products
+            })
+        }
+        else{
+            return res.status(404).json({
+                status: 'error',
+                message: 'Cart is Empty'
+            })
+        }
 
-
-        
     } catch (error) {
-        
+        return res.status(500).json({
+            status: 'error',
+            message: 'Error Getting Items From Cart',
+        })
+            
     }
 
 }

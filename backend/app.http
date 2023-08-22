@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "u_name": "Nancy Drew2",
-    "email": "nancydrew02@gmail.com",
+    "email": "drewyujyy@gmail.com",
     "password": "1234nd"
 }
 
@@ -14,7 +14,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "email": "nancydrew01@gmail.com",
+     "email": "nancyd@gmail.com",
     "password": "1234nd"
 }
 

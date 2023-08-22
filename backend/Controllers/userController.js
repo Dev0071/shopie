@@ -20,26 +20,50 @@ export const registerUser = async(req,res)=>{
         const { u_name, email, password } = req.body;
         const hashed_password  = await bcrypt.hash(password, 5)
 
-        await DB.exec("usp_AddUser",
+        const response = await DB.exec("usp_AddUser",
         {user_id, u_name, email, password:hashed_password});
+        const new_user = response.recordset[0]
 
-        const payload = {
-            user_id,u_name
-        }
-        const token = generateAccessToken(payload)
-        req.session.user_id = user_id
-        return res.status(201).json(
-            {
-                'status': 'success',
-                message: 'User Registered Successfully',
-                token,
-                user: {
-                    user_id,
-                    u_name,
-                }
+
+        if(response.rowsAffected[0] == 1){
+            const payload = {
+                user_id:new_user.user_id,
+                u_name: new_user.u_name,
+                is_admin: new_user.is_admin
+            }
+            
+            const token = generateAccessToken(payload)
+            req.session.user_id = user_id
+            return res.status(201).json(
+                {
+                    'status': 'success',
+                    message: 'User Registered Successfully',
+                    token,
+                    user: {
+                        user_id,
+                        u_name,
+                        is_admin: new_user.is_admin
+                        
+                    }
             }
         )
+
+        }
+        else{
+            
+            return res.status(500).json(
+                {
+                    'status': 'error',
+                    error: "Internal Server Error"
+                }
+            )
+            
+
+        }
+
+        
     } catch (error) {
+        console.log(error)
         if (error.number == 2627 && error.message.includes('duplicate key value')) {
             return res.status(409).json(
                 {
@@ -114,7 +138,7 @@ try {
     }
 }
 catch (error) {
-    console.log(error)
+    
     return res.status(500).json(
         {
             status: "error",
