@@ -7,6 +7,7 @@ AS
 BEGIN
     INSERT INTO [User] (user_id,u_name, email, password)
     VALUES (@user_id, @u_name,@email, @password);
+    SELECT user_id,u_name,is_admin FROM [User] WHERE user_id=@user_id
 END;
 
 
@@ -81,7 +82,7 @@ CREATE OR ALTER PROCEDURE usp_GetUserByMail
    
 AS
 BEGIN
-	SELECT user_id,email,u_name,password from [User] where email=@email
+	SELECT * from [User] where email=@email
     
 END;
 
@@ -128,4 +129,12 @@ BEGIN
         END
     END
     
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetAllProducts
+AS
+BEGIN
+    SELECT *
+    FROM Product where product_quantity>0 ORDER BY added_at;
 END;
