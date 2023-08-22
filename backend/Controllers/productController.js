@@ -17,7 +17,13 @@ cloudinary.config({
 
 export const addProduct = async(req,res) => {
     try {
-        
+        const admin = req.info.is_admin
+        if(!admin){
+            return res.status(401).json({
+                status: 'error',
+                message: 'Only Admins can add products'
+            })
+        }
         const { error } = validateProductAddSchema.validate(req.body);
 
         if(error){
@@ -164,6 +170,13 @@ export const getProductById = async (req, res) => {
 
 export const deleteProduct = async(req,res) => {
     try {
+        const admin = req.info.is_admin
+        if(!admin){
+            return res.status(401).json({
+                status: 'error',
+                message: 'Only Admins can Delete Products'
+            })
+        }
         const {product_id} = req.params
 
         const response = await DB.exec('usp_DeleteProduct',{product_id});
@@ -190,6 +203,13 @@ export const deleteProduct = async(req,res) => {
 
 export const editProduct = async(req,res) =>{
     try {
+        const admin = req.info.is_admin
+        if(!admin){
+            return res.status(401).json({
+                status: 'error',
+                message: 'Only Admins can edit products'
+            })
+        }
         const { error } = validateProductAddSchema.validate(req.body);
 
         if(error){

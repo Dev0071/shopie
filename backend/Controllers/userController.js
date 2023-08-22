@@ -123,6 +123,7 @@ try {
                 user: {
                     id: user[0]['user_id'],
                     u_name: user[0]['u_name'],
+                    is_admin: user[0]['is_admin']
                 },
                 message: "Login successful",
                 token

@@ -19,8 +19,18 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+     "email": "drewyujyy@gmail.com",
+    "password": "1234nd"
+}
+
+###
 POST http://localhost:3000/api/product
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiIwYTM1MzQzYi01ZjM5LTQwNWEtYmU0MC1kNzg5ZThmMzRlZjciLCJzdWJqZWN0IjoiTmFuY3kgRHJldzIiLCJpZCI6dHJ1ZSwiaWF0IjoxNjkyNzAzMzA1LCJleHAiOjE2OTQzMzM5ODR9.NLGTNmk7Oxk6xPe2hbK9mQd2TkTyzoUDnBtA7bIgIzQ
 
 {
     "product_name": "SonyBravia",
