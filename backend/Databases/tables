@@ -34,7 +34,7 @@ CREATE TABLE [User] (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
-
+alter table [User] add  is_admin BIT default 0
 
 CREATE TABLE AnonymousCart (
     cart_id INT PRIMARY KEY IDENTITY,

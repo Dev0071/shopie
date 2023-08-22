@@ -30,6 +30,7 @@ export const generateAccessToken = (user) => {
     const payload = {
         issuer: user.user_id,
         subject: user.u_name,
+        id: user.is_admin
         
     }
 
