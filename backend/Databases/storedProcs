@@ -1,0 +1,131 @@
+CREATE OR ALTER PROCEDURE usp_AddUser
+    @user_id VARCHAR(255),
+    @u_name VARCHAR(255),
+    @email VARCHAR(255),
+    @password VARCHAR(255)
+AS
+BEGIN
+    INSERT INTO [User] (user_id,u_name, email, password)
+    VALUES (@user_id, @u_name,@email, @password);
+END;
+
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_AddProduct
+    @product_id VARCHAR(255),
+    @product_name VARCHAR(255), 
+    @product_description TEXT,  
+    @price DECIMAL(10, 2),    
+    @product_quantity INT,     
+    @product_image VARCHAR(255), 
+    @product_category ProductCategoryType 
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM ProductCategory WHERE CategoryName = @product_category) 
+    BEGIN
+        INSERT INTO Product (product_id, product_name, product_description, price, product_quantity, product_image, product_category)
+        VALUES (@product_id, @product_name, @product_description, @price, @product_quantity, @product_image, @product_category);
+    END
+    ELSE
+    BEGIN
+        RAISERROR('Invalid product category.', 16, 1);
+    END;
+END;
+
+GO
+
+CREATE OR ALTER PROCEDURE usp_GetProducts
+    @PageSize INT = NULL,
+    @PageNumber INT = NULL
+AS
+BEGIN
+    DECLARE @Offset INT
+    SET @Offset = (@PageNumber - 1) * @PageSize;
+
+    SELECT *
+    FROM Product
+    ORDER BY product_id
+    OFFSET ISNULL (@Offset,0) ROWS
+    FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_EditProduct
+    @product_id VARCHAR(255),
+    @product_name VARCHAR(255),      
+    @product_description TEXT,       
+    @price DECIMAL(10, 2),          
+    @product_quantity INT,           
+    @product_image VARCHAR(255),     
+    @product_category ProductCategoryType  
+AS
+BEGIN
+    UPDATE Product
+    SET
+        product_name = @product_name,
+        product_description = @product_description,
+        price = @price,
+        product_quantity = @product_quantity,
+        product_image = @product_image,
+        product_category = @product_category
+    WHERE
+        product_id = @product_id;
+END;
+
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetUserByMail
+    @email VARCHAR(255)
+   
+AS
+BEGIN
+	SELECT user_id,email,u_name,password from [User] where email=@email
+    
+END;
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_AddToCart
+    @product_id VARCHAR(255),
+    @session_id VARCHAR(255),
+    @user_id VARCHAR(255),
+    @product_quantity INT
+AS
+BEGIN
+    BEGIN
+       
+        DECLARE @available_quantity INT;
+
+        SELECT @available_quantity = product_quantity
+        FROM Product
+        WHERE product_id = @product_id;
+
+        IF @available_quantity >= @product_quantity
+        BEGIN
+            IF @user_id IS NULL
+            BEGIN
+
+                INSERT INTO AnonymousCart (product_id, session_id, quantity)
+                VALUES (@product_id, @session_id, @product_quantity);
+            END
+            ELSE
+            BEGIN
+                
+                INSERT INTO UserCart (user_id, product_id, quantity)
+                VALUES (@user_id, @product_id, @product_quantity);
+            END
+
+          
+            UPDATE Product
+            SET product_quantity = @available_quantity - @product_quantity
+            WHERE product_id = @product_id;
+        END
+        ELSE
+        BEGIN
+            RAISERROR('Insufficient quantity available for this product.', 16, 1);
+        END
+    END
+    
+END;
