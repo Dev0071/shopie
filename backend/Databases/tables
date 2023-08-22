@@ -36,12 +36,12 @@ CREATE TABLE [User] (
 );
 
 
- 
 CREATE TABLE AnonymousCart (
     cart_id INT PRIMARY KEY IDENTITY,
     product_id VARCHAR(255) NOT NULL,
     session_id VARCHAR(255) NOT NULL,
     quantity INT,
+	added_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (product_id) REFERENCES Product (product_id)
 );
 
@@ -50,9 +50,13 @@ CREATE TABLE UserCart (
     user_id VARCHAR(255) NOT NULL,
     product_id VARCHAR(255) NOT NULL,
     quantity INT,
+	added_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (user_id) REFERENCES [User] (user_id),
     FOREIGN KEY (product_id) REFERENCES Product (product_id)
+
 );
+
+
 
 
 select * from UserCart

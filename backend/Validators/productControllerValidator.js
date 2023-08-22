@@ -38,3 +38,20 @@ export const validateProductAddSchema = Joi.object({
 }
 
 )
+
+export const validateCartSchema = Joi.object({
+    product_id: Joi.string().required().messages({
+        "string.base": "Invalid Product Id Format",
+        "string.empty": "Product Id is required"
+
+    }),
+    product_quantity: Joi.number().min(1).required().messages({
+        "string.base": "Invalid Quantity Format",
+        "string.empty": "Quantity is required",
+        'string.min': 'Name must have at least 3 characters'
+
+    })
+
+    
+
+})

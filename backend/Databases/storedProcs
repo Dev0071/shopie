@@ -36,23 +36,23 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE usp_GetProducts
-    @PageSize INT,
-    @PageNumber INT
+    @PageSize INT = NULL,
+    @PageNumber INT = NULL
 AS
 BEGIN
     DECLARE @Offset INT
     SET @Offset = (@PageNumber - 1) * @PageSize;
 
     SELECT *
-    FROM Product WHERE product_quantity>0
+    FROM Product
     ORDER BY product_id
-    OFFSET @Offset ROWS
-    FETCH NEXT @PageSize ROWS ONLY ;
+    OFFSET ISNULL (@Offset,0) ROWS
+    FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
 END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_EditProduct
-    @product_id INT,
+    @product_id VARCHAR(255),
     @product_name VARCHAR(255),      
     @product_description TEXT,       
     @price DECIMAL(10, 2),          
@@ -86,5 +86,46 @@ BEGIN
 END;
 
 
-
 GO
+CREATE OR ALTER PROCEDURE usp_AddToCart
+    @product_id VARCHAR(255),
+    @session_id VARCHAR(255),
+    @user_id VARCHAR(255),
+    @product_quantity INT
+AS
+BEGIN
+    BEGIN
+       
+        DECLARE @available_quantity INT;
+
+        SELECT @available_quantity = product_quantity
+        FROM Product
+        WHERE product_id = @product_id;
+
+        IF @available_quantity >= @product_quantity
+        BEGIN
+            IF @user_id IS NULL
+            BEGIN
+
+                INSERT INTO AnonymousCart (product_id, session_id, quantity)
+                VALUES (@product_id, @session_id, @product_quantity);
+            END
+            ELSE
+            BEGIN
+                
+                INSERT INTO UserCart (user_id, product_id, quantity)
+                VALUES (@user_id, @product_id, @product_quantity);
+            END
+
+          
+            UPDATE Product
+            SET product_quantity = @available_quantity - @product_quantity
+            WHERE product_id = @product_id;
+        END
+        ELSE
+        BEGIN
+            RAISERROR('Insufficient quantity available for this product.', 16, 1);
+        END
+    END
+    
+END;

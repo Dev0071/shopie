@@ -1,7 +1,6 @@
 import { DB } from "../DBHelpers/index.js";
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt  from 'bcrypt';
-import jwt  from "jsonwebtoken";
 import { validateRegisterSchema,validateloginSchema } from "../Validators/userControllerValidators.js";
 import { generateAccessToken } from "../Middleware/index.js"
 
@@ -28,6 +27,7 @@ export const registerUser = async(req,res)=>{
             user_id,u_name
         }
         const token = generateAccessToken(payload)
+        req.session.user_id = user_id
         return res.status(201).json(
             {
                 'status': 'success',
@@ -93,6 +93,7 @@ try {
         const comparePwd = await bcrypt.compare(password, hashedPwd);
         if (comparePwd) {
             const token = generateAccessToken(payload)
+            req.session.user_id = user[0]['user_id']
             return res.status(200).json({
                 status: "success",
                 user: {
@@ -123,3 +124,21 @@ catch (error) {
 }
 }
 
+
+export const logoutUser =  (req, res) => {
+
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Internal Server Error'
+        });
+      }
+      res.status(200).json({ 
+        status: 'success',
+        message: 'Logout successful' 
+    });
+});
+  
+}
+  
