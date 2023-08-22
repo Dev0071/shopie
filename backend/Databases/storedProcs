@@ -35,20 +35,20 @@ END;
 
 GO
 
-CREATE OR ALTER PROCEDURE usp_GetProducts
-    @PageSize INT = NULL,
-    @PageNumber INT = NULL
-AS
-BEGIN
-    DECLARE @Offset INT
-    SET @Offset = (@PageNumber - 1) * @PageSize;
+-- CREATE OR ALTER PROCEDURE usp_GetProducts
+--     @PageSize INT = NULL,
+--     @PageNumber INT = NULL
+-- AS
+-- BEGIN
+--     DECLARE @Offset INT
+--     SET @Offset = (@PageNumber - 1) * @PageSize;
 
-    SELECT *
-    FROM Product
-    ORDER BY product_id
-    OFFSET ISNULL (@Offset,0) ROWS
-    FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
-END;
+--     SELECT *
+--     FROM Product
+--     ORDER BY product_id
+--     OFFSET ISNULL (@Offset,0) ROWS
+--     FETCH NEXT ISNULL (@PageSize,10) ROWS ONLY;
+-- END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_EditProduct

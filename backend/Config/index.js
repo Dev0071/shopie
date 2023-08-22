@@ -5,7 +5,7 @@ export const sqlConfig = {
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
     password: process.env.DB_PWD,
-    server: 'localhost',
+    server: process.env.DB_SERVER,
     pool: {
         max: 10,
         min: 0,
