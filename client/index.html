@@ -23,33 +23,39 @@
                                 <li id="electronics-btn">
                                     <span class="material-icons-outlined">
                                         desktop_windows
-                                    </span>Electronics</li>
+                                    </span>Electronics
+                                </li>
                                 <li id="cosmetis-btn">
                                     <span class="material-icons-outlined">
                                         brush
-                                    </span>Cosmetics</li>
+                                    </span>Cosmetics
+                                </li>
                                 <li id="clothes-btn">
                                     <span class="material-icons-outlined">
                                         woman
-                                    </span>Clothes</li>
+                                    </span>Clothes
+                                </li>
                                 <li id="books-btn">
                                     <span class="material-icons-outlined">
                                         menu_book
-                                    </span>Books</li>
+                                    </span>Books
+                                </li>
                                 <li id="furniture-btn">
                                     <span class="material-icons-outlined">
                                         chair
-                                    </span>Furniture</li>
+                                    </span>Furniture
+                                </li>
                                 <li id="all-categories-btn">
                                     <span class="material-icons-outlined">
                                         apps
-                                    </span>All</li>
+                                    </span>All
+                                </li>
                             </ul>
                         </div>
                     </li>
-                    
+
                     <li class="aboutus-btn">About us</li>
-                   
+
                 </ul>
             </div>
 
@@ -70,7 +76,7 @@
                 </div>
                 <div class="div-icon">
                     <span class="icon-counter">3</span>
-                    <span class="material-icons-outlined">
+                    <span class="material-icons-outlined" id="cart">
                         shopping_cart
                     </span>
                 </div>
@@ -108,7 +114,7 @@
         </div>
     </nav>
 
-    <main>
+    <main id="main">
         <div class="home">
             <div class="home-text">
                 <p>Get the best <br> <span id="changing-text">products</span> <br>
@@ -161,7 +167,7 @@
                     <li id="clothes-btn">Clothes</li>
                     <li id="books-btn">Books</li>
                     <li id="furniture-btn">Furniture</li>
-                    <li id="all-categories-btn">All</li>
+                    <li id="all-categories-btn" class="active-btn">All</li>
                 </ul>
             </div>
             <div class="products">
@@ -296,9 +302,122 @@
                     </div>
                 </div>
             </div>
+            <div class="shoes">
+                <div class="shoe-text">
+                    <h1>Lates stylist shoes</h1>
+                    <p>Men 2020 collection shoes</p>
+                    <button>See all</button>
+                </div>
+                <div class="shoe-image">
+                    <img src="./images/shoe1.png" alt="">
+                </div>
+            </div>
         </div>
 
     </main>
+
+    <div class="cart-container">
+        <button id="closeCartBtn" class="close-cart-btn">
+            <span class="material-icons-outlined">
+                close
+            </span>
+        </button>
+        <div class="cart">
+            <div class="cart-products">
+                <div class="cart-product">
+                    <div class="cart-product-image">
+                        <img src="./images/shoes.png" alt="">
+                    </div>
+                    <div class="cart-product-info">
+                        <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo vitae amet,
+                            maiores adipisci pariatur doloribus.</p>
+                        <p class="price">$ 1990</p>
+                        <p class="units-left">
+                            <span class="material-icons-outlined" style="color: red;">
+                                error_outline
+                            </span>
+                            2 items left
+                        </p>
+                        <div class="cart-counter">
+                            <button class="delete-btn">
+                                <span class="material-icons-outlined" style="color: red;">
+                                    delete
+                                </span>
+                                Remove</button>
+                            <div class="counter-input">
+                                <button class="increase-counter-btn">-</button>
+                                <p class="product-quantity">1</p>
+                                <button class="decrease-counter-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout">
+                    <div class="checkout-info">
+                        <h3>Subtotal</h3>
+                        <p>$ 1990.oo</p>
+                    </div>
+                    <div class="checkout-info">
+                        <h3>Shipping</h3>
+                        <p>$ 00.00</p>
+                    </div>
+                    <div class="checkout-info">
+                        <h3>Total</h3>
+                        <p>$ 1990.00</p>
+                    </div>
+                    <button class="checkout-btn">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-div1">
+            <div class="footer-logo">Sho<span>pie</span></div>
+            <div class="footer-social-icons">
+                <a>
+                    <img src="./images/facebook.png" alt="">
+                </a>
+                <a>
+                    <img src="./images/twitter.png">
+                </a>
+                <a>
+                    <img src="./images/instagram.png" alt="">
+                </a>
+            </div>
+            <div class="footer-text">
+                <p>© 2023 Shopie. All Rights Reserved </p>
+            </div>
+        </div>
+        <div class="footer-pages">
+            <h4>Shop</h4>
+            <ul>
+                <li>About us</li>
+                <li>Contacts</li>
+                <li>Clothes</li>
+                <li>Location</li>
+                <li>FAQ</li>
+        </div>
+        <div class="links">
+            <h4>Links</h4>
+            <ul>
+                <li>Furniture</li>
+                <li>Electronics</li>
+                <li>Clothes</li>
+                <li>Books</li>
+                <li>Cosmetics</li>
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h4>Contact us</h4>
+            <ul>
+                <li>Address: 1234 Street Adress City Address, 1234</li>
+                <li>Phone: (123) 456-7890</li>
+                <li>Fax: (123) 456-7890</li>
+                <li>Email: hello@gmail.com</li>
+            </ul>
+        </div>
+    </div>
 
     <script src="./index.js"></script>
 </body>
