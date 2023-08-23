@@ -6,57 +6,80 @@ const imageUrlContainer = document.getElementById('image-url-container');
 const imageUrlElement = document.getElementById('image-url');
 const imageUploadInput = document.getElementById('image-upload');
 
-addProductForm.addEventListener('submit', addProduct);
-function addProduct(event) {
+// addProductForm.addEventListener('submit', addProduct);
+// Assuming you have a form with appropriate input fields for adding a product
+// const addProductForm = document.getElementById('add-product-form');
+
+addProductForm.addEventListener('submit', async event => {
 	event.preventDefault();
 
 	const productName = document.getElementById('product-name').value;
 	const productDescription = document.getElementById('product-description').value;
 	const productPrice = document.getElementById('product-price').value;
 	const productQuantity = document.getElementById('product-quantity').value;
-	const productImage = document.getElementById('product-image').value; // You can handle file upload logic here
+	const productImage = document.getElementById('product-image').value;
 	const productCategory = document.getElementById('product-category').value;
+	const errordiv = document.querySelector('.error');
 
-	if (
-		productName &&
-		productDescription &&
-		productPrice &&
-		productQuantity &&
-		productImage &&
-		productCategory
-	) {
-		const productItem = createProductItem(
-			productName,
-			productDescription,
-			productPrice,
-			productQuantity,
-			productCategory,
-		);
-		productList.appendChild(productItem);
-		// Add the new product to the products array
-		productsArray.push(productItem);
+	const productData = {
+		product_name: productName,
+		product_description: productDescription,
+		price: productPrice,
+		product_quantity: productQuantity,
+		product_image: productImage,
+		product_category: productCategory,
+	};
+console.log(productData);
+	const token = localStorage.getItem('token');
+	console.log(token);
 
-		// Display the products in the UI
-		displayProducts();
-		// Clear form inputs
-		addProductForm.reset();
+	try {
+		const response = await fetch('http://localhost:3000/api/product/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(productData),
+		});
+
+		if (response.ok) {
+			const responseData = await response.json();
+			console.log('Product added successfully:', responseData);
+			// You can update the UI or perform other actions here
+		} else {
+			const errorData = await response.json();
+			console.error('Error adding product:', errorData);
+			errordiv.textContent = errorData.message;
+			// Handle the error and display a message to the user
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		errordiv.textContent = error.message;
+		// Handle any network or other errors
 	}
-}
+});
 
 /**
  * Create product item
  */
-function createProductItem(name, description, price, quantity, category) {
+function createProductItem(
+	productName,
+	productDescription,
+	productPrice,
+	productQuantity,
+	productCategory,
+) {
 	const productItem = document.createElement('div');
 	productItem.className = 'product-item';
 
 	const productInfo = document.createElement('div');
 	productInfo.innerHTML = `
-        <strong>Name:</strong> ${name}<br>
-        <strong>Description:</strong> ${description}<br>
-        <strong>Price:</strong> $${price}<br>
-        <strong>Quantity:</strong> ${quantity}<br>
-        <strong>Category:</strong> ${category}
+        <strong>Name:</strong> ${productName}<br>
+        <strong>Description:</strong> ${productDescription}<br>
+        <strong>Price:</strong> $${productPrice}<br>
+        <strong>Quantity:</strong> ${productQuantity}<br>
+        <strong>Category:</strong> ${productCategory}<br>
     `;
 	productItem.appendChild(productInfo);
 
@@ -83,14 +106,7 @@ function displayProducts() {
 	productList.innerHTML = '';
 
 	productsArray.forEach(product => {
-		const productItem = createProductItem(
-			product.name,
-			product.description,
-			product.price,
-			product.quantity,
-			product.category,
-		);
-		productList.appendChild(productItem);
+		productList.appendChild(product);
 	});
 }
 
@@ -118,9 +134,8 @@ function handleImageUpload() {
 				'X-Api-Key': removeBgApiKey,
 			},
 		})
-			.then(response => response.blob()) // Convert response to blob
+			.then(response => response.blob())
 			.then(imageBlob => {
-				// Create a URL for the blob and display the image
 				const cloudinaryFormData = new FormData();
 				cloudinaryFormData.append('file', imageBlob);
 				cloudinaryFormData.append('upload_preset', 'shopie');
@@ -153,15 +168,12 @@ function handleImageUpload() {
 // Reference the "Copy" button
 const copyUrlButton = document.getElementById('copy-url-button');
 
-// Add a click event listener to the "Copy" button
 copyUrlButton.addEventListener('click', copyImageUrl);
 
-// Function to copy the image URL to the clipboard
 function copyImageUrl() {
 	const imageUrlElement = document.getElementById('image-url');
 	const imageUrl = imageUrlElement.textContent;
 
-	// Create a temporary textarea element to copy the URL to the clipboard
 	const textarea = document.createElement('textarea');
 	textarea.value = imageUrl;
 	document.body.appendChild(textarea);
@@ -169,6 +181,5 @@ function copyImageUrl() {
 	document.execCommand('copy');
 	document.body.removeChild(textarea);
 
-	// Notify the user that the URL has been copied
 	alert('Image URL copied to clipboard!');
 }

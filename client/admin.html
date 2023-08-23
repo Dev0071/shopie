@@ -14,11 +14,11 @@
 
 <body>
     <h1>Product Management</h1>
-    
-    
+
+
     <div class="form-container">
         <h5>Image Upload Example</h5>
-        
+
         <!-- Image Upload Form -->
         <form id="image-upload-form">
             <label for="image-upload">Upload an Image:</label>
@@ -26,7 +26,7 @@
             <button type="button" id="upload-button">Upload Image</button>
             <button id="copy-url-button">Copy</button>
         </form>
-        
+
         <!-- Display Uploaded Image URL -->
         <div id="image-url-container" style="display: none;">
             <h2>Uploaded Image URL:</h2>
@@ -39,6 +39,7 @@
     <div class="form-container">
         <h2>Add Product</h2>
         <form id="add-product-form">
+            <p class="error"></p>
             <label for="product-name">Product Name:</label>
             <input type="text" id="product-name" required>
             <label for="product-description">Product Description:</label>
@@ -50,7 +51,14 @@
             <label for="product-image">Product Image:</label>
             <input type="text" id="product-image" accept="image/*" required>
             <label for="product-category">Product Category:</label>
-            <input type="text" id="product-category" required>
+            <select id="product-category" required>
+                <option value="">Select a category</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Books">Books</option>
+                <option value="Clothes">Clothes</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Cosmetics">Cosmetics</option>
+            </select>
             <button type="submit">Add Product</button>
         </form>
     </div>

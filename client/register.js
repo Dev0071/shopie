@@ -1,9 +1,7 @@
-
 const loginForm = document.getElementById('login-form');
 const signupForm = document.getElementById('signup-form');
 const errordivlogin = document.querySelector('.errordivlogin');
-const errordiv = document.querySelector('.errordiv')
-
+const errordiv = document.querySelector('.errordiv');
 
 /**
  * registerUser - Register a new user
@@ -31,24 +29,23 @@ const registerUser = async () => {
 			localStorage.setItem('user', JSON.stringify(responseData.user));
 
 			// show success message
-			errordiv.innerHTML = 'Registration successful. Redirecting to homepage.';
+			errordiv.innerHTML = 'Registration successful. Redirecting...';
 			errordiv.style.color = 'green';
 			clearFormFields();
 
 			// redirect to login page
 			setTimeout(() => {
 				window.location.href = 'http://127.0.0.1:5500/client/index.html'; // Replace with your homepage URL
-			}, 3000);
+			}, 1000);
 		} else {
 			const responseData = await response.json();
-			errordiv.innerHTML =  responseData.message;
+			errordiv.innerHTML = responseData.message;
 			errordiv.style.color = 'red';
 		}
 	} catch (error) {
 		console.error('Error registering user:', error);
 	}
 };
-
 
 /**
  * register the user when the signup form is submitted
@@ -78,7 +75,7 @@ signupForm.addEventListener('submit', function (event) {
  * loginUser - Log in an existing user
  */
 
-const loginBtn = document.getElementById('login-btn')
+const loginBtn = document.getElementById('login-btn');
 
 const loginUser = async () => {
 	// console.log(loginForm);
@@ -102,23 +99,41 @@ const loginUser = async () => {
 			// Save token and user data to local storage
 			localStorage.setItem('token', responseData.token);
 			localStorage.setItem('user', JSON.stringify(responseData.user));
+			console.log(responseData);
+
+			//reidrect to the required page
+			if (responseData.user.is_admin) {
+				console.log(responseData.user.is_admin);
+				// Redirect to admin page
+				setTimeout(() => {
+					window.location.href = 'http://127.0.0.1:5500/client/admin.html';
+				}, 1000);
+			} else {
+				// Redirect to homepage after a brief delay (e.g., 3 seconds)
+				errordivlogin.innerHTML = 'Login successful. Redirecting to homepage...';
+				errordivlogin.style.color = 'green';
+				clearFormFields();
+
+				setTimeout(() => {
+					window.location.href = 'http://127.0.0.1:5500/client/index.html';
+				}, 1000);
+			}
 
 			// show success message
-			errordivlogin.innerHTML = 'Registration successful. Redirecting to homepage.';
+			errordivlogin.innerHTML = 'Registration successful. Redirecting...';
 			errordivlogin.style.color = 'green';
 			clearFormFields();
 
 			// errordiv.innerHTML = 'Login successful. Redirecting to homepage...';
 
 			// Redirect to homepage after a brief delay (e.g., 3 seconds)
-			setTimeout(() => {
-				window.location.href = 'http://127.0.0.1:5500/client/index.html';
-			}, 3000);
+			// setTimeout(() => {
+			// 	window.location.href = 'http://127.0.0.1:5500/client/index.html';
+			// }, 3000);
 		} else {
 			const responseData = await response.json();
 			errordiv.innerHTML = 'Login failed: ' + responseData.message;
 			errordiv.style.color = 'red';
-
 		}
 	} catch (error) {
 		console.error('Error logging in:', error);
@@ -143,7 +158,6 @@ loginBtn.addEventListener('click', function (event) {
 	}
 });
 
-
 function isValidEmail(email) {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailRegex.test(email);
@@ -152,8 +166,8 @@ function isValidEmail(email) {
 function showError(field, message) {
 	errordiv.textContent = message;
 	errordiv.style.color = 'red';
-	errordivlogin.textContent= message;
-	errordivlogin.style.color ='red'
+	errordivlogin.textContent = message;
+	errordivlogin.style.color = 'red';
 	const input = document.querySelector(`#${field}`);
 	input.focus();
 	input.style.borderBottom = '1px solid red';
@@ -166,8 +180,8 @@ function showError(field, message) {
 function clearError() {
 	errordiv.textContent = '';
 	errordiv.style.color = '';
-	errordivlogin.textContent =''
-	errordivlogin.style.color =''
+	errordivlogin.textContent = '';
+	errordivlogin.style.color = '';
 }
 
 const clearFormFields = () => {
