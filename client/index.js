@@ -96,6 +96,69 @@ setInterval(changeText, 1000);
  * cart logic
  */
 
+/***
+ * get all products
+ */
+
+// Define the function to fetch and display products
+async function fetchAndDisplayProducts() {
+    try {
+        const response = await fetch('http://localhost:3000/api/product/');
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            const products = data.products;
+
+            const productsContainer = document.querySelector('.products');
+
+            // Clear existing products
+            productsContainer.innerHTML = '';
+
+            // Loop through the products and create product elements
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.product_image}" alt="">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-info-text">
+                            <p>${product.product_name}</p>
+                            <div class="rating">
+                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
+                                    star_outline
+                                </span>
+                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
+                                    star_outline
+                                </span>
+                            </div>
+                            <p>$ ${product.price}</p>
+                        </div>
+                        <div class="product-icons">
+                            <span class="material-icons-outlined">
+                                favorite_border
+                            </span>
+                            <span class="material-icons-outlined">
+                                shopping_cart
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                // Append the product to the products container
+                productsContainer.appendChild(productDiv);
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching products:', error);
+    }
+}
+
+// Call the fetchAndDisplayProducts function to fetch and display products
+fetchAndDisplayProducts();
+
+
 const cartIcon = document.getElementById("cart");
 const cartContainer = document.querySelector(".cart-container");
 const mainDiv = document.getElementById("main");

@@ -34,8 +34,15 @@ BEGIN
     END;
 END;
 
-GO
 
+
+
+
+
+
+
+
+-- GO
 -- CREATE OR ALTER PROCEDURE usp_GetProducts
 --     @PageSize INT = NULL,
 --     @PageNumber INT = NULL
