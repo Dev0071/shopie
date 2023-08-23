@@ -3,7 +3,7 @@ import {addToCart,getCartItems,removeItemFromCart,emptyCart} from "../Controller
 
 const cartRouter = Router();
 
-cartRouter.post('/', addToCart)
+cartRouter.post('/:product_id', addToCart)
 cartRouter.get('/items', getCartItems)
 cartRouter.post('/items/:id', removeItemFromCart)
 cartRouter.post('/items/', emptyCart)

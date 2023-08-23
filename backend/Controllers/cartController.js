@@ -1,17 +1,10 @@
-import { validateCartSchema } from "../Validators/productControllerValidator.js";
 import { DB } from "../DBHelpers/index.js";
 
 export const addToCart = async(req,res)=>{
     try {
-        const { error } = validateCartSchema.validate(req.body);
-        if(error){
-            return res.status(422).json({
-                'status': 'error',
-                'message': error.message
-            }
-            )
-        }
-        const { product_id, product_quantity } = req.body;
+        
+        const product_id = req.params.product_id
+        const product_quantity = 1;
         const session_id = req.sessionID;
         const user_id = req.session.user_id || null;
 

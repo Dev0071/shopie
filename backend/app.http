@@ -46,6 +46,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiIwYTM1M
 GET http://localhost:3000/api/product
 
 
+
+# GET PRODUCT BY CATEGORY
+###
+GET http://localhost:3000/api/product/all/Elecronics
+
+
 ###
 GET http://localhost:3000/api/product?PageNumber=5?PageSize=1
 
@@ -103,13 +109,9 @@ GET http://localhost:3000/api/cart/items
 
 # ADD ITEM TO CART
 ###
-POST http://localhost:3000/api/cart
+POST http://localhost:3000/api/cart/92419e82-c148-46cf-9c01-e04f2cd708fb
 Content-Type: application/json
 
-{
-    "product_id": "92419e82-c148-46cf-9c01-e04f2cd708fb",
-    "product_quantity": 1
-}
 
 
 # REMOVE ITEM FROM CART

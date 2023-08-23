@@ -13,6 +13,7 @@ INSERT INTO ProductCategory (CategoryName) VALUES ('Electronics');
 INSERT INTO ProductCategory (CategoryName) VALUES ('Cosmetics');
 INSERT INTO ProductCategory (CategoryName) VALUES ('Clothes');
 INSERT INTO ProductCategory (CategoryName) VALUES ('Furniture');
+INSERT INTO ProductCategory (CategoryName) VALUES ('Books');
 
 select * from ProductCategory
 

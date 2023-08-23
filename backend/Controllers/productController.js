@@ -332,3 +332,35 @@ export const searchProduct = async(req,res)=>{
         
     }
 }
+
+export const getProductByCategory = async(req,res)=>{
+    try {
+        
+        const product_category = req.params.product_category;
+      
+        const resp = await DB.exec('usp_GetAllProductsByCategory',{product_category});
+
+        if(resp.rowsAffected == 0){
+            return res.status(404).json({
+                status:'error',
+             'message': `No Products in Category ${product_category} Found`
+             })
+        }
+
+        return res.status(200).json({
+            status:'success',
+            products: resp.recordset,
+        
+        })
+
+    } catch (error) {
+       
+        return res.status(500).json( {
+            status: 'error',
+            message: `Error getting Items Based on Category${category}`});
+        
+    }
+   
+
+
+}
