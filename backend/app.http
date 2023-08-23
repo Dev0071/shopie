@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "u_name": "Nancy Drew2",
-    "email": "drewyuwjy1y@gmail.com",
+    "email": "wdrewyuwjy1y@gmail.com",
     "password": "1234nd"
 }
 
@@ -49,7 +49,7 @@ GET http://localhost:3000/api/product
 
 # GET PRODUCT BY CATEGORY
 ###
-GET http://localhost:3000/api/product/all/Elecronics
+GET http://localhost:3000/api/product/all/cosmetics
 
 
 ###
@@ -99,7 +99,7 @@ GET http://localhost:3000/api/product/search/electronic
 # CART ENDPOINTS
 # EMPTY CART
 ###
-POST http://localhost:3000/api/cart/items
+POST http://localhost:3000/api/cart/all/items
 
 
 

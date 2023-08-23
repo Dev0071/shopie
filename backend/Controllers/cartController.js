@@ -71,7 +71,7 @@ export const emptyCart = async(req,res)=>{
     try{
     const user_id = req.session.user_id || null;
     const session_id = req.sessionID;
-
+    
     await DB.exec('usp_EmptyCart',{user_id, session_id});
         return res.status(200).json({
             status:'success',
@@ -94,15 +94,23 @@ export const removeItemFromCart = async(req,res)=>{
     const user_id = req.session.user_id || null;
     const session_id = req.sessionID;
     const product_id = req.params.product_id;
-    
-
+   
     const response = await DB.exec('usp_RemoveFromCart',{user_id, session_id,product_id})
-    console.log(response)
-
+    
+    if(response.rowsAffected[0] == 1){
         return res.status(200).json({
             status:'success',
             message: 'Product was removed from cart'
         })
+    }
+    else{
+        return res.status(404).json({
+            status:'error',
+            message: 'Product was not found in the cart'
+        })
+    }
+
+       
     
 
 } catch (error) {

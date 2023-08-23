@@ -34,6 +34,14 @@ BEGIN
     END;
 END;
 
+GO
+CREATE OR ALTER PROCEDURE usp_GetAllProductsByCategory  
+   @product_category ProductCategoryType    
+AS  
+BEGIN  
+    SELECT *  
+    FROM Product where product_quantity>0 AND product_category=@product_category ORDER BY added_at;  
+END;
 
 
 
@@ -155,4 +163,31 @@ BEGIN
     FROM Product
     WHERE (product_name LIKE '%' + @query + '%'
        OR product_category LIKE @query + '%') AND product_quantity>0;
+END;
+GO
+CREATE OR ALTER PROCEDURE usp_DeleteProduct  
+    @product_id VARCHAR(255)  
+AS  
+BEGIN  
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        DELETE FROM UserCart WHERE product_id = @product_id;
+        DELETE FROM AnonymousCart WHERE product_id = @product_id;
+        UPDATE Product SET product_quantity = 0 WHERE product_id = @product_id;
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetProductById  
+     @product_id VARCHAR(255)  
+AS  
+BEGIN  
+    SELECT *  
+    FROM Product  
+ WHERE product_id = @product_id  AND product_quantity>0
 END;
