@@ -123,59 +123,44 @@ END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_RemoveFromCart
-    @user_id VARCHAR(255),
-    @session_id VARCHAR(255),
-    @product_id VARCHAR(255)
+    @user_id NVARCHAR(36),
+    @session_id NVARCHAR(36),
+    @product_id NVARCHAR(36)
 AS
 BEGIN
-    DECLARE @cart_id INT;
-    DECLARE @current_quantity INT;
-
-    IF @user_id IS NULL
-    BEGIN
-        SELECT @cart_id = cart_id
-        FROM AnonymousCart
-        WHERE session_id = @session_id AND product_id = @product_id;
-
-        SELECT @current_quantity = quantity
-        FROM AnonymousCart
-        WHERE cart_id = @cart_id AND product_id = @product_id;
-
-        IF @current_quantity > 1
-        BEGIN
-            UPDATE AnonymousCart
-            SET quantity = @current_quantity - 1
-            WHERE cart_id = @cart_id AND product_id = @product_id;
-        END
-        ELSE
+    BEGIN TRY
+        BEGIN TRANSACTION; 
+        
+        IF @user_id IS NULL
         BEGIN
             DELETE FROM AnonymousCart
-            WHERE cart_id = @cart_id AND product_id = @product_id;
-        END
-    END
-    ELSE
-    BEGIN
-        SELECT @cart_id = cart_id
-        FROM UserCart
-        WHERE user_id = @user_id AND product_id = @product_id;
-
-        SELECT @current_quantity = quantity
-        FROM UserCart
-        WHERE cart_id = @cart_id AND product_id = @product_id;
-
-        IF @current_quantity > 1
-        BEGIN
-            UPDATE UserCart
-            SET quantity = @current_quantity - 1
-            WHERE cart_id = @cart_id AND product_id = @product_id;
+            WHERE cart_id = (
+                SELECT MIN(cart_id)
+                FROM AnonymousCart
+                WHERE product_id = @product_id
+            AND session_id = @session_id);
         END
         ELSE
         BEGIN
-            DELETE FROM UserCart
-            WHERE cart_id = @cart_id AND product_id = @product_id;
-        END
-    END
-    UPDATE Product
-    SET product_quantity = product_quantity + 1
-    WHERE product_id = @product_id;
+            DELETE FROM userCart
+            WHERE cart_id = (
+                SELECT MIN(cart_id)
+                FROM userCart
+                WHERE product_id = @product_id
+				AND user_id = @user_id
+            );
+        END;
+
+        IF @@ROWCOUNT = 1
+        BEGIN
+            UPDATE Product
+            SET product_quantity = product_quantity + 1
+            WHERE product_id = @product_id;
+        END;
+        
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+    END CATCH;
 END;
