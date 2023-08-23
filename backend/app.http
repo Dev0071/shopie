@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "u_name": "Nancy Drew2",
-    "email": "drewyujyy@gmail.com",
+    "email": "drewyuwjy1y@gmail.com",
     "password": "1234nd"
 }
 
@@ -14,7 +14,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-     "email": "nancyd@gmail.com",
+     "email": "drewyujyy@gmail.com",
     "password": "1234nd"
 }
 
@@ -30,7 +30,7 @@ Content-Type: application/json
 ###
 POST http://localhost:3000/api/product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiIwYTM1MzQzYi01ZjM5LTQwNWEtYmU0MC1kNzg5ZThmMzRlZjciLCJzdWJqZWN0IjoiTmFuY3kgRHJldzIiLCJpZCI6dHJ1ZSwiaWF0IjoxNjkyNzAzMzA1LCJleHAiOjE2OTQzMzM5ODR9.NLGTNmk7Oxk6xPe2hbK9mQd2TkTyzoUDnBtA7bIgIzQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiIwYTM1MzQzYi01ZjM5LTQwNWEtYmU0MC1kNzg5ZThmMzRlZjciLCJzdWJqZWN0IjoiTmFuY3kgRHJldzIiLCJpZCI6dHJ1ZSwiaWF0IjoxNjkyNzkwOTA4LCJleHAiOjE2OTQ0MjE1ODd9.mcMtZMu7eBnTsfaLisfhwlZnzEtMYT6v1jhq91qQ8bw
 
 {
     "product_name": "SonyBravia",
@@ -46,10 +46,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiIwYTM1M
 GET http://localhost:3000/api/product
 
 
+
+# GET PRODUCT BY CATEGORY
+###
+GET http://localhost:3000/api/product/all/Elecronics
+
+
 ###
 GET http://localhost:3000/api/product?PageNumber=5?PageSize=1
 
 
+
+# GET PRODUCT BY ID
 ###
 GET http://localhost:3000/api/product/92419e82-c148-46cf-9c01-e04f2cd708fb
 
@@ -81,15 +89,38 @@ Content-Type: multipart/form-data
 }
 
 
+# SEARCH FOR A PRODUCT BY NAME OR CATEGORY
 ###
-POST http://localhost:3000/api/cart
-Content-Type: application/json
-
-{
-    "product_id": "92419e82-c148-46cf-9c01-e04f2cd708fb",
-    "product_quantity": 1
-}
+GET http://localhost:3000/api/product/search/electronic
 
 
+
+
+# CART ENDPOINTS
+# EMPTY CART
+###
+POST http://localhost:3000/api/cart/items
+
+
+
+# GET ITEMS IN THE CART
 ###
 GET http://localhost:3000/api/cart/items
+
+# ADD ITEM TO CART
+###
+POST http://localhost:3000/api/cart/015295bd-3b06-4120-820c-09b6e516c7ef
+Content-Type: application/json
+
+
+
+# REMOVE ITEM FROM CART
+###
+POST http://localhost:3000/api/cart/items/015295bd-3b06-4120-820c-09b6e516c7ef
+Content-Type: application/json
+
+
+
+
+###
+POST http://localhost:3000/api/user/logout
