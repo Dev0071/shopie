@@ -6,7 +6,7 @@ const cartRouter = Router();
 cartRouter.post('/:product_id', addToCart)
 cartRouter.get('/items', getCartItems)
 cartRouter.post('/items/:id', removeItemFromCart)
-cartRouter.post('/items/', emptyCart)
+cartRouter.post('/all/items', emptyCart)
 
 
 
