@@ -145,3 +145,14 @@ BEGIN
     SELECT *
     FROM Product where product_quantity>0 ORDER BY added_at;
 END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_SearchProducts
+    @query VARCHAR(255)
+AS
+BEGIN
+    SELECT *
+    FROM Product
+    WHERE (product_name LIKE '%' + @query + '%'
+       OR product_category LIKE @query + '%') AND product_quantity>0;
+END;

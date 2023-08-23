@@ -2,7 +2,7 @@ import { DB } from "../DBHelpers/index.js";
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt  from 'bcrypt';
 import { validateRegisterSchema,validateloginSchema } from "../Validators/userControllerValidators.js";
-import { generateAccessToken } from "../Middleware/index.js"
+import { generateAccessToken,transferAnonCart } from "../Middleware/index.js"
 
 export const registerUser = async(req,res)=>{
     try {
@@ -34,8 +34,9 @@ export const registerUser = async(req,res)=>{
             
             const token = generateAccessToken(payload)
             req.session.user_id = user_id
-            return res.status(201).json(
-                {
+                transferAnonCart(req, res, async () => {
+                
+                return res.status(201).json({
                     'status': 'success',
                     message: 'User Registered Successfully',
                     token,
@@ -43,10 +44,10 @@ export const registerUser = async(req,res)=>{
                         user_id,
                         u_name,
                         is_admin: new_user.is_admin
-                        
                     }
-            }
-        )
+                });
+            });
+        
 
         }
         else{
@@ -63,7 +64,7 @@ export const registerUser = async(req,res)=>{
 
         
     } catch (error) {
-        console.log(error)
+        
         if (error.number == 2627 && error.message.includes('duplicate key value')) {
             return res.status(409).json(
                 {
@@ -118,6 +119,7 @@ try {
         if (comparePwd) {
             const token = generateAccessToken(payload)
             req.session.user_id = user[0]['user_id']
+            transferAnonCart(req, res, async () => {
             return res.status(200).json({
                 status: "success",
                 user: {
@@ -128,7 +130,9 @@ try {
                 message: "Login successful",
                 token
             })
+        });
         }
+   
         else {
             return res.status(403).json({
 

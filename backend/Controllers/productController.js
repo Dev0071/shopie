@@ -17,7 +17,7 @@ cloudinary.config({
 
 export const addProduct = async(req,res) => {
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
@@ -170,7 +170,7 @@ export const getProductById = async (req, res) => {
 
 export const deleteProduct = async(req,res) => {
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
@@ -203,7 +203,7 @@ export const deleteProduct = async(req,res) => {
 
 export const editProduct = async(req,res) =>{
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
@@ -304,4 +304,63 @@ export const uploadImage =  async(req,res)=>{
         
     }
   
+}
+
+export const searchProduct = async(req,res)=>{
+    try {
+        const { query } = req.params;
+
+        const results = await DB.exec('usp_SearchProducts', { query });
+
+        if(results.rowsAffected[0]==0){
+            return res.status(404).json({
+                status:'error',
+              'message': 'No Products found'
+             })
+        }
+        
+        res.status(200).json({
+             status:'success',
+             products: results.recordset
+             });
+   
+
+        
+    } catch (error) {
+        
+        res.status(500).json({ error: 'Error While Searching' })
+        
+    }
+}
+
+export const getProductByCategory = async(req,res)=>{
+    try {
+        
+        const product_category = req.params.product_category;
+      
+        const resp = await DB.exec('usp_GetAllProductsByCategory',{product_category});
+
+        if(resp.rowsAffected == 0){
+            return res.status(404).json({
+                status:'error',
+             'message': `No Products in Category ${product_category} Found`
+             })
+        }
+
+        return res.status(200).json({
+            status:'success',
+            products: resp.recordset,
+        
+        })
+
+    } catch (error) {
+       
+        return res.status(500).json( {
+            status: 'error',
+            message: `Error getting Items Based on Category${category}`});
+        
+    }
+   
+
+
 }

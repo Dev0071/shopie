@@ -1,0 +1,181 @@
+CREATE OR ALTER PROCEDURE usp_GetCartItems
+    @user_id VARCHAR(255),
+    @session_id VARCHAR(255)
+AS
+BEGIN
+    IF @user_id IS NULL
+    BEGIN
+        SELECT
+           
+            ac.product_id,
+            SUM(ac.quantity) AS combined_quantity,
+            p.product_name,
+            p.price
+        FROM (
+            SELECT
+                
+                product_id,
+                SUM(quantity) AS quantity
+            FROM AnonymousCart
+            WHERE session_id = @session_id
+            GROUP BY cart_id, product_id
+        ) AS ac
+        INNER JOIN Product p ON ac.product_id = p.product_id
+        GROUP BY ac.product_id, p.product_name, p.price;
+    END
+    ELSE
+    BEGIN
+        SELECT
+          
+            uc.product_id,
+            SUM(uc.quantity) AS quantity,
+            p.product_name,
+            p.price
+        FROM (
+            SELECT
+                cart_id,
+                product_id,
+                SUM(quantity) AS quantity
+            FROM UserCart
+            WHERE user_id = @user_id
+            GROUP BY cart_id, product_id
+        ) AS uc
+        INNER JOIN Product p ON uc.product_id = p.product_id
+        GROUP BY  uc.product_id, p.product_name, p.price;
+    END
+END;
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_TransferAnonymousToUserCart
+    @session_id VARCHAR(255),
+    @user_id VARCHAR(255)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        IF EXISTS (SELECT 1 FROM AnonymousCart WHERE session_id = @session_id)
+        BEGIN
+            DECLARE @product_id VARCHAR(255);
+            DECLARE @quantity INT;
+            DECLARE cart_cursor CURSOR FOR
+            SELECT product_id, quantity
+            FROM AnonymousCart
+            WHERE session_id = @session_id;
+            OPEN cart_cursor;
+            FETCH NEXT FROM cart_cursor INTO @product_id, @quantity;
+
+            WHILE @@FETCH_STATUS = 0
+            BEGIN
+                DECLARE @existing_user_cart INT;
+                SELECT @existing_user_cart = COUNT(*)
+                FROM UserCart
+                WHERE user_id = @user_id AND product_id = @product_id;
+
+                IF @existing_user_cart = 0
+                BEGIN
+                    INSERT INTO UserCart (user_id, product_id, quantity)
+                    VALUES (@user_id, @product_id, @quantity);
+                END
+                ELSE
+                BEGIN
+                    UPDATE UserCart
+                    SET quantity = quantity + @quantity
+                    WHERE user_id = @user_id AND product_id = @product_id;
+                END
+                DELETE FROM AnonymousCart
+                WHERE session_id = @session_id AND product_id = @product_id;
+                FETCH NEXT FROM cart_cursor INTO @product_id, @quantity;
+            END;
+
+            CLOSE cart_cursor;
+            DEALLOCATE cart_cursor;
+        END
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+       
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_EmptyCart
+    @user_id VARCHAR(255),
+    @session_id VARCHAR(255)
+AS
+BEGIN
+    BEGIN
+      
+        IF @user_id IS NULL
+        BEGIN
+            DELETE FROM AnonymousCart WHERE session_id = @session_id;
+        END
+        ELSE
+        BEGIN
+            DELETE FROM UserCart WHERE user_id = @user_id;
+        END
+    END
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_RemoveFromCart
+    @user_id VARCHAR(255),
+    @session_id VARCHAR(255),
+    @product_id VARCHAR(255)
+AS
+BEGIN
+    DECLARE @cart_id INT;
+    DECLARE @current_quantity INT;
+
+    IF @user_id IS NULL
+    BEGIN
+        SELECT @cart_id = cart_id
+        FROM AnonymousCart
+        WHERE session_id = @session_id AND product_id = @product_id;
+
+        SELECT @current_quantity = quantity
+        FROM AnonymousCart
+        WHERE cart_id = @cart_id AND product_id = @product_id;
+
+        IF @current_quantity > 1
+        BEGIN
+            UPDATE AnonymousCart
+            SET quantity = @current_quantity - 1
+            WHERE cart_id = @cart_id AND product_id = @product_id;
+        END
+        ELSE
+        BEGIN
+            DELETE FROM AnonymousCart
+            WHERE cart_id = @cart_id AND product_id = @product_id;
+        END
+    END
+    ELSE
+    BEGIN
+        SELECT @cart_id = cart_id
+        FROM UserCart
+        WHERE user_id = @user_id AND product_id = @product_id;
+
+        SELECT @current_quantity = quantity
+        FROM UserCart
+        WHERE cart_id = @cart_id AND product_id = @product_id;
+
+        IF @current_quantity > 1
+        BEGIN
+            UPDATE UserCart
+            SET quantity = @current_quantity - 1
+            WHERE cart_id = @cart_id AND product_id = @product_id;
+        END
+        ELSE
+        BEGIN
+            DELETE FROM UserCart
+            WHERE cart_id = @cart_id AND product_id = @product_id;
+        END
+    END
+    UPDATE Product
+    SET product_quantity = product_quantity + 1
+    WHERE product_id = @product_id;
+END;
