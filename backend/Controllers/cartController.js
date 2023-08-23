@@ -94,11 +94,11 @@ export const removeItemFromCart = async(req,res)=>{
     const user_id = req.session.user_id || null;
     const session_id = req.sessionID;
     const product_id = req.params.product_id;
-    const {quantity} = req.body
-    console.log(quantity)
+    
 
-    const response = await DB.exec('usp_RemoveFromCart',{user_id, session_id,product_id, quantity});
+    const response = await DB.exec('usp_RemoveFromCart',{user_id, session_id,product_id})
     console.log(response)
+
         return res.status(200).json({
             status:'success',
             message: 'Product was removed from cart'

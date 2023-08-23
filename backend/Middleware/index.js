@@ -20,6 +20,7 @@ export const authenticateToken = (req,res,next)=>{
             return res.sendStatus(403).json({message: err});
         }
         req.info = decoded;
+       
         next();
     })
 

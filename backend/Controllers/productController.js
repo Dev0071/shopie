@@ -17,7 +17,7 @@ cloudinary.config({
 
 export const addProduct = async(req,res) => {
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
@@ -170,7 +170,7 @@ export const getProductById = async (req, res) => {
 
 export const deleteProduct = async(req,res) => {
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
@@ -203,7 +203,7 @@ export const deleteProduct = async(req,res) => {
 
 export const editProduct = async(req,res) =>{
     try {
-        const admin = req.info.is_admin
+        const admin = req.info.id
         if(!admin){
             return res.status(401).json({
                 status: 'error',
