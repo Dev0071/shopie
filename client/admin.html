@@ -16,11 +16,11 @@
     <h1>Product Management</h1>
 
 
-    <div class="form-container">
-        <h5>Image Upload Example</h5>
-
+    <div class="forms-container">
+        
         <!-- Image Upload Form -->
         <form id="image-upload-form">
+            <h5>Image Upload Example</h5>
             <label for="image-upload">Upload an Image:</label>
             <input type="file" id="image-upload" accept="image/*">
             <button type="button" id="upload-button">Upload Image</button>
@@ -32,13 +32,10 @@
             <h2>Uploaded Image URL:</h2>
             <p id="image-url"></p>
         </div>
-    </div>
+        <!-- Add Product Form -->
 
-
-    <!-- Add Product Form -->
-    <div class="form-container">
-        <h2>Add Product</h2>
         <form id="add-product-form">
+            <h2>Add Product</h2>
             <p class="error"></p>
             <label for="product-name">Product Name:</label>
             <input type="text" id="product-name" required>
@@ -67,6 +64,38 @@
     <div id="product-list" class="product-list">
         <!-- Product items will be displayed here -->
     </div>
+
+    <!-- Add this HTML code to your admin page -->
+    <table id="product-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Product rows will be added here -->
+            <!-- Example product row -->
+            <tr>
+                <td>Product 1</td>
+                <td>Description of Product 1</td>
+                <td>$100</td>
+                <td>10</td>
+                <td>Electronics</td>
+                <td><img src="product_image_url_1" alt="Product 1 Image"></td>
+                <td>
+                    <button class="delete-button">Delete</button>
+                    <button class="update-button">Update</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
 
     <script src="admin.js"></script>
 </body>

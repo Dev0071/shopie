@@ -105,6 +105,7 @@ const loginUser = async () => {
 			if (responseData.user.is_admin) {
 				console.log(responseData.user.is_admin);
 				// Redirect to admin page
+				
 				setTimeout(() => {
 					window.location.href = 'http://127.0.0.1:5500/client/admin.html';
 				}, 1000);
@@ -124,16 +125,14 @@ const loginUser = async () => {
 			errordivlogin.style.color = 'green';
 			clearFormFields();
 
-			// errordiv.innerHTML = 'Login successful. Redirecting to homepage...';
-
-			// Redirect to homepage after a brief delay (e.g., 3 seconds)
-			// setTimeout(() => {
-			// 	window.location.href = 'http://127.0.0.1:5500/client/index.html';
-			// }, 3000);
+			
 		} else {
 			const responseData = await response.json();
-			errordiv.innerHTML = 'Login failed: ' + responseData.message;
-			errordiv.style.color = 'red';
+			errordivlogin.textContent = 'Login failed: ' + responseData.message;
+			errordivlogin.style.color = 'red';
+			setTimeout(() => {
+				clearError();
+			}, 3000);
 		}
 	} catch (error) {
 		console.error('Error logging in:', error);
@@ -145,7 +144,6 @@ loginBtn.addEventListener('click', function (event) {
 	const email = document.getElementById('login-email').value;
 	const password = document.getElementById('login-password').value;
 
-	// errordiv.textContent = '';
 
 	if (email === '') {
 		showError('login-email', 'Email is required');
