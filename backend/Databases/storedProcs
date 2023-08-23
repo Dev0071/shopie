@@ -34,6 +34,14 @@ BEGIN
     END;
 END;
 
+GO
+CREATE OR ALTER PROCEDURE usp_GetAllProductsByCategory  
+   @product_category ProductCategoryType    
+AS  
+BEGIN  
+    SELECT *  
+    FROM Product where product_quantity>0 AND product_category=@product_category ORDER BY added_at;  
+END;
 
 
 

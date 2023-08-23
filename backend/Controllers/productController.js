@@ -357,7 +357,7 @@ export const getProductByCategory = async(req,res)=>{
        
         return res.status(500).json( {
             status: 'error',
-            message: `Error getting Items Based on Category${category}`});
+            message: `Error getting Items Based on Category`});
         
     }
    
