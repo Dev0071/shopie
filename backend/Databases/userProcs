@@ -1,0 +1,27 @@
+CREATE OR ALTER PROCEDURE usp_AddUser
+    @user_id VARCHAR(255),
+    @u_name VARCHAR(255),
+    @email VARCHAR(255),
+    @password VARCHAR(255)
+AS
+BEGIN
+    INSERT INTO [User] (user_id,u_name, email, password)
+    VALUES (@user_id, @u_name,@email, @password);
+    SELECT user_id,u_name,is_admin FROM [User] WHERE user_id=@user_id
+END;
+
+
+
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetUserByMail
+    @email VARCHAR(255)
+   
+AS
+BEGIN
+	SELECT * from [User] where email=@email
+    
+END;
+
+

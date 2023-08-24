@@ -80,7 +80,7 @@ export const emptyCart = async(req,res)=>{
     
 
 } catch (error) {
-    
+    console.log(error)
     return res.status(500).json({
         status: 'error',
         message: 'Error Removing Products From Cart',
@@ -122,4 +122,34 @@ export const removeItemFromCart = async(req,res)=>{
         
 }
 
+}
+
+export const removeallSuchItemsFromCart = async(req,res)=>{
+    try{
+    const user_id = req.session.user_id || null;
+    const session_id = req.sessionID;
+    const product_id = req.params.product_id;
+   
+    const response = await DB.exec('usp_RemoveallSuchItemsFromCart',{user_id, session_id,product_id})
+    
+    if(response.rowsAffected[0] == 1){
+        return res.status(200).json({
+            status:'success',
+            message: 'Product was removed from cart'
+        })
+    }
+    else{
+        return res.status(404).json({
+            status:'error',
+            message: 'Product was not found in the cart'
+        })
+    }
+    }
+    catch(error){
+        return res.status(500).json({
+            status:'error',
+            message: 'Error Removing Item'
+        })
+
+    }
 }

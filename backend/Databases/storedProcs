@@ -1,17 +1,3 @@
-CREATE OR ALTER PROCEDURE usp_AddUser
-    @user_id VARCHAR(255),
-    @u_name VARCHAR(255),
-    @email VARCHAR(255),
-    @password VARCHAR(255)
-AS
-BEGIN
-    INSERT INTO [User] (user_id,u_name, email, password)
-    VALUES (@user_id, @u_name,@email, @password);
-    SELECT user_id,u_name,is_admin FROM [User] WHERE user_id=@user_id
-END;
-
-
-
 GO
 CREATE OR ALTER PROCEDURE usp_AddProduct
     @product_id VARCHAR(255),
@@ -91,60 +77,6 @@ END;
 
 
 
-GO
-CREATE OR ALTER PROCEDURE usp_GetUserByMail
-    @email VARCHAR(255)
-   
-AS
-BEGIN
-	SELECT * from [User] where email=@email
-    
-END;
-
-
-GO
-CREATE OR ALTER PROCEDURE usp_AddToCart
-    @product_id VARCHAR(255),
-    @session_id VARCHAR(255),
-    @user_id VARCHAR(255),
-    @product_quantity INT
-AS
-BEGIN
-    BEGIN
-       
-        DECLARE @available_quantity INT;
-
-        SELECT @available_quantity = product_quantity
-        FROM Product
-        WHERE product_id = @product_id;
-
-        IF @available_quantity >= @product_quantity
-        BEGIN
-            IF @user_id IS NULL
-            BEGIN
-
-                INSERT INTO AnonymousCart (product_id, session_id, quantity)
-                VALUES (@product_id, @session_id, @product_quantity);
-            END
-            ELSE
-            BEGIN
-                
-                INSERT INTO UserCart (user_id, product_id, quantity)
-                VALUES (@user_id, @product_id, @product_quantity);
-            END
-
-          
-            UPDATE Product
-            SET product_quantity = @available_quantity - @product_quantity
-            WHERE product_id = @product_id;
-        END
-        ELSE
-        BEGIN
-            RAISERROR('Insufficient quantity available for this product.', 16, 1);
-        END
-    END
-    
-END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_GetAllProducts
