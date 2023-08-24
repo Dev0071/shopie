@@ -180,17 +180,19 @@ export const deleteProduct = async(req,res) => {
         const {product_id} = req.params
 
         const response = await DB.exec('usp_DeleteProduct',{product_id});
-
-        if(response.rowsAffected[0] == 0){
-            return res.status(404).json({
-                status:'error',
-              'message': 'Product not found'
+        console.log(response)
+        if(response.rowsAffected[2] == 1){
+          
+             return res.status(200).json({
+                status:'success',
+               'message': 'Product Deleted Successfully'
              })
         }
-        return res.status(200).json({
-            status:'success',
-           'message': 'Product Deleted Successfully'
+        return res.status(404).json({
+            status:'error',
+          'message': 'Product not found'
          })
+        
     } catch (error) {
         
         return res.status(500).json( {
