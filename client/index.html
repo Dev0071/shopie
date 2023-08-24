@@ -81,7 +81,7 @@
                     </span>
                 </div>
                 <div>
-                    <span class="material-icons-outlined">
+                    <span class="material-icons-outlined person">
                         person
                     </span>
                 </div>
@@ -112,6 +112,13 @@
             </ul>
 
         </div>
+        <div class="user-profile-popup" id="userProfilePopup">
+            <ul class="profile-options">
+                <li id="manage-account">Manage Account</li>
+                <li id="logout">Log Out</li>
+            </ul>
+        </div>
+
     </nav>
 
     <main id="main">
@@ -170,115 +177,24 @@
                     <li id="all-categories-btn" class="active-btn">All</li>
                 </ul>
             </div>
+            <div id="productModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal-btn">&times;</span>
+                    <div class="modal-product">
+                        <div class="modal-product-image">
+                            <img src="" alt="" id="modalProductImage">
+                        </div>
+                        <div class="modal-product-info">
+                            <h2 id="modalProductName"></h2>
+                            <p id="modalProductDescription"></p>
+                            <p class="modal-price">$ <span id="modalProductPrice"></span></p>
+                            <button class="add-to-cart-modal" id="modalAddToCartBtn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="products">
-                <div class="product">
-                    <div class="product-image">
-                        <img src="https://res.cloudinary.com/dlrkyzhnp/image/upload/v1692774767/riqqnldm2vmae7sqig9u.png"
-                            alt="">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-info-text">
-                            <p>Watch jijeufugy</p>
-                            <div class="rating">
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                                </span>
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                            </div>
-                            <p>$ 100</p>
-                        </div>
-                        <div class="product-icons">
-                            <span class="material-icons-outlined">
-                                favorite_border
-                            </span>
-                            <span class="material-icons-outlined">
-                                shopping_cart
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product">
-                    <div class="product-image">
-                        <img src="https://res.cloudinary.com/dlrkyzhnp/image/upload/v1692775151/zqcr5kfydphxelwmpxl0.png"
-                            alt="">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-info-text">
-                            <p>Watch jijeufugy</p>
-                            <div class="rating">
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                                </span>
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                            </div>
-                            <p>$ 100</p>
-                        </div>
-                        <div class="product-icons">
-                            <span class="material-icons-outlined">
-                                favorite_border
-                            </span>
-                            <span class="material-icons-outlined">
-                                shopping_cart
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product">
-                    <div class="product-image">
-                        <img src="https://res.cloudinary.com/dlrkyzhnp/image/upload/v1692774716/qr3qlllwxzdv6js0qazn.png"
-                            alt="">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-info-text">
-                            <p>Watch jijeufugy</p>
-                            <div class="rating">
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                                </span>
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                            </div>
-                            <p>$ 100</p>
-                        </div>
-                        <div class="product-icons">
-                            <span class="material-icons-outlined">
-                                favorite_border
-                            </span>
-                            <span class="material-icons-outlined">
-                                shopping_cart
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product">
-                    <div class="product-image">
-                        <img src="https://res.cloudinary.com/dlrkyzhnp/image/upload/v1692773997/cg5uyvaxccesxcdf2brl.png"
-                            alt="">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-info-text">
-                            <p>Watch jijeufugy</p>
-                            <div class="rating">
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                                </span>
-                                <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                    star_outline
-                            </div>
-                            <p>$ 100</p>
-                        </div>
-                        <div class="product-icons">
-                            <span class="material-icons-outlined">
-                                favorite_border
-                            </span>
-                            <span class="material-icons-outlined">
-                                shopping_cart
-                            </span>
-                        </div>
-                    </div>
-                </div>
                 <div class="product">
                     <div class="product-image">
                         <img src="https://res.cloudinary.com/dlrkyzhnp/image/upload/v1692776182/jpvpdrjyqxbpamse7k2u.png"
@@ -336,27 +252,7 @@
                         </div>
                     </div>" alt="">
                 </div>
-                <div class="product-info">
-                    <div class="product-info-text">
-                        <p>Watch jijeufugy</p>
-                        <div class="rating">
-                            <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                star_outline
-                            </span>
-                            <span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
-                                star_outline
-                        </div>
-                        <p>$ 100</p>
-                    </div>
-                    <div class="product-icons">
-                        <span class="material-icons-outlined">
-                            favorite_border
-                        </span>
-                        <span class="material-icons-outlined">
-                            shopping_cart
-                        </span>
-                    </div>
-                </div>
+                
             </div>
         </div>
         <div class="shoes">

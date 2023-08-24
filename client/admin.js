@@ -67,6 +67,7 @@ addProductForm.addEventListener('submit', async event => {
 	setTimeout(() => {
 		errordiv.textContent = '';
 	}, 3000);
+	refreshProductTable()
 });
 
 const clearFormFields = () => {
@@ -119,7 +120,7 @@ async function refreshProductTable() {
                 <td class="product-image">${product.product_image}</td>
                 <td>
                     <button class="delete-button" onclick="deleteProduct('${product.product_id}')">Delete</button>
-                    <button class="update-button" data-product-id=${product.product_id}>Update</button>
+                    <button class="update-button" >Update</button>
                 </td>
             </tr>
         `;
@@ -158,44 +159,44 @@ refreshProductTable();
  */
 
 // Add an event listener to the document to handle dynamic update buttons
-document.addEventListener('click', event => {
-    if (event.target.classList.contains('update-button')) {
-        const productRow = event.target.closest('tr');
-        const productName = productRow.querySelector('.product-name').textContent;
-        const productDescription = productRow.querySelector('.product-description').textContent;
-        const productPrice = productRow.querySelector('.product-price').textContent;
-        const productQuantity = productRow.querySelector('.product-quantity').textContent;
-        const productCategory = productRow.querySelector('.product-category').textContent;
-        const productImage = productRow.querySelector('.product-image')
+// document.addEventListener('click', event => {
+//     if (event.target.classList.contains('update-button')) {
+//         const productRow = event.target.closest('tr');
+//         const productName = productRow.querySelector('.product-name').textContent;
+//         const productDescription = productRow.querySelector('.product-description').textContent;
+//         const productPrice = productRow.querySelector('.product-price').textContent;
+//         const productQuantity = productRow.querySelector('.product-quantity').textContent;
+//         const productCategory = productRow.querySelector('.product-category').textContent;
+//         const productImage = productRow.querySelector('.product-image')
 
-        // Populate the update form with extracted values
-        document.getElementById('update-product-name').value = productName;
-        document.getElementById('update-product-description').value = productDescription;
-        document.getElementById('update-product-price').value = productPrice;
-        document.getElementById('update-product-quantity').value = productQuantity;
-        document.getElementById('update-product-category').value = productCategory;
-        document.getElementById('update-product-image').value = productImage;
-    }
-});
+//         // Populate the update form with extracted values
+//         document.getElementById('update-product-name').value = productName;
+//         document.getElementById('update-product-description').value = productDescription;
+//         document.getElementById('update-product-price').value = productPrice;
+//         document.getElementById('update-product-quantity').value = productQuantity;
+//         document.getElementById('update-product-category').value = productCategory;
+//         document.getElementById('update-product-image').value = productImage;
+//     }
+// });
 
 // Update product details form submit event listener
-document.getElementById('update-product-form').addEventListener('submit', async event => {
-    event.preventDefault();
+// document.getElementById('update-product-form').addEventListener('submit', async event => {
+//     event.preventDefault();
 
-    // Get the updated product details from the form
-    const updatedProductName = document.getElementById('update-product-name').value;
-    const updatedProductDescription = document.getElementById('update-product-description').value;
-    const updatedProductPrice = document.getElementById('update-product-price').value;
-    const updatedProductQuantity = document.getElementById('update-product-quantity').value;
-    const updatedProductCategory = document.getElementById('update-product-category').value;
-    const updatedProductImage = document.getElementById('update-product-image').value;
+//     // Get the updated product details from the form
+//     const updatedProductName = document.getElementById('update-product-name').value;
+//     const updatedProductDescription = document.getElementById('update-product-description').value;
+//     const updatedProductPrice = document.getElementById('update-product-price').value;
+//     const updatedProductQuantity = document.getElementById('update-product-quantity').value;
+//     const updatedProductCategory = document.getElementById('update-product-category').value;
+//     const updatedProductImage = document.getElementById('update-product-image').value;
 
-    // Perform the update process (send updated data to the server)
-    // ...
+//     // Perform the update process (send updated data to the server)
+//     // ...
 
-    // Clear the update form fields
-    document.getElementById('update-product-form').reset();
-});
+//     // Clear the update form fields
+//     document.getElementById('update-product-form').reset();
+// });
 
 
 

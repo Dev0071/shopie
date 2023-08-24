@@ -273,6 +273,7 @@ main {
 
 .pages {
     width: 90%;
+    /* border: 1px solid black; */
     margin: 0 auto;
 }
 
@@ -291,16 +292,18 @@ main {
 }
 
 .products {
+    /* width: 100%; */
     margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    /* border: 1px solid black; */
 }
 
 .product {
     display: flex;
     flex-direction: column;
-    width: 280px;
+    width: 250px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -584,7 +587,102 @@ main {
 
 
 
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
 
+.modal-content {
+    position: relative;
+    background-color: var(--bg-color);
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-product {
+    display: flex;
+    align-items: center;
+}
+
+.modal-product-image img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    margin-right: 20px;
+}
+
+.modal-product-info {
+    flex: 1;
+}
+
+.modal-price {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.add-to-cart-modal {
+    background-color: var(--text-color);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+/* Add this CSS to your existing stylesheets */
+.user-profile-popup {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    background-color: var(--bg-color);
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    border-radius: 5px;
+}
+
+.profile-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-options li {
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.profile-options li:hover {
+    background-color: var(--primary-color);
+}
+
+/* Style the profile icon to make it more interactive */
+.user-icons .material-icons-outlined.person {
+    cursor: pointer;
+}
+
+/* Add additional styles to suit your design */
 
 
 /* media queries */
@@ -679,7 +777,7 @@ main {
         justify-content: center;
     }
     .product{
-        width: 280px;
+        width: 250px;
     }
 
     .pages-nav {
