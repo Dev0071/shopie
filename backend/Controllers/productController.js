@@ -143,7 +143,7 @@ export const getProductById = async (req, res) => {
         const {product_id} = req.params
 
         const response = await DB.exec('usp_GetProductById',{product_id});
-
+        
         if(response.rowsAffected[0] == 1){
             return res.status(200).json({
                'status':'success',
