@@ -41,12 +41,11 @@ export const generateAccessToken = (user) => {
 
 }
 
-export const transferAnonCart = async(req, res, next)=>{
+export const transferAnonCart = async(session_id, user_id,req, res, next)=>{
 
     try {
-        const user_id = req.session.user_id;
-        const session_id = req.sessionID;
-
+       
+        // console.log(user_id, session_id);
         if (user_id && session_id) {
     
             await DB.exec("usp_TransferAnonymousToUserCart", { user_id, session_id });
@@ -61,5 +60,28 @@ export const transferAnonCart = async(req, res, next)=>{
     }
 
 
+
+}
+
+export const checkUser = (req,res,next)=>{
+    const authHeaders = req.headers['authorization'];
+
+    const token = authHeaders && authHeaders.split(' ')[1];
+
+    if(token == null){
+       next()
+    }
+
+    jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
+        if(err instanceof jwt.TokenExpiredError){
+            return res.sendStatus(403).json({message: "Token expired"});
+        }
+        if(err){
+            return res.sendStatus(403).json({message: err});
+        }
+        req.info = decoded;
+       
+        next();
+    })
 
 }
