@@ -33,9 +33,9 @@ export const registerUser = async(req,res)=>{
             }
             
             const token = generateAccessToken(payload)
-            req.session.user_id = user_id
-                transferAnonCart(req, res, async () => {
-                
+            const session_id = req.cookies.session_id
+                transferAnonCart(session_id, new_user.user_id, req, res, async () => {
+               
                 return res.status(201).json({
                     'status': 'success',
                     message: 'User Registered Successfully',
@@ -64,7 +64,7 @@ export const registerUser = async(req,res)=>{
 
         
     } catch (error) {
-        
+        console.log(error)
         if (error.number == 2627 && error.message.includes('duplicate key value')) {
             return res.status(409).json(
                 {
@@ -118,8 +118,8 @@ try {
         const comparePwd = await bcrypt.compare(password, hashedPwd);
         if (comparePwd) {
             const token = generateAccessToken(payload)
-            req.session.user_id = user[0]['user_id']
-            transferAnonCart(req, res, async () => {
+            const session_id = req.cookies.session_id
+            transferAnonCart(session_id, user[0]['user_id'],req, res, async () => {
             return res.status(200).json({
                 status: "success",
                 user: {
@@ -143,7 +143,7 @@ try {
     }
 }
 catch (error) {
-    
+    console.log(error)
     return res.status(500).json(
         {
             status: "error",
@@ -154,20 +154,42 @@ catch (error) {
 }
 
 
-export const logoutUser =  (req, res) => {
+// export const logoutUser =  (req, res) => {
 
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: 'Internal Server Error'
+//     req.session.destroy((err) => {
+//       if (err) {
+//         return res.status(500).json({
+//             status: 'error',
+//             message: 'Internal Server Error'
+//         });
+//       }
+//       res.status(200).json({ 
+//         status: 'success',
+//         message: 'Logout successful' 
+//     });
+// });
+
+export const logoutUser =  (req, res) => {
+    try {
+        res.clearCookie('user_id');
+        res.clearCookie('sessionId');
+        console.log(res)
+        return res.status(200).json({
+            status: "success",
+            message: "Logout successful"
         });
-      }
-      res.status(200).json({ 
-        status: 'success',
-        message: 'Logout successful' 
-    });
-});
+    } catch (error) {
+        return res.status().json({
+            message: error.message
+        })
+        
+    }
+
+    
+};
   
-}
+
+
+
+
   
