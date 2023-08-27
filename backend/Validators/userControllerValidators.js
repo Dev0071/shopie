@@ -25,7 +25,8 @@ const validateRegisterSchema = Joi.object({
             'string.base': 'Password should be a string',
             'string.empty': 'Password is required',
             'string.pattern.base': 'Password must contain at least one letter, one number, and be at least 6 characters long'
-        })
+        }),
+    session_id: Joi.string()
 });
 
 
@@ -37,7 +38,19 @@ const validateloginSchema = Joi.object({
     }),
     password: Joi.string().required().messages({
         'password.empty': 'Password is required',
-    })
+    }),
+    session_id: Joi.string()
 })
 
-export {validateRegisterSchema,validateloginSchema};
+const validateUpdatePassword = Joi.object({
+    password: Joi.string()
+        .required()
+        .pattern(new RegExp('^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$'))
+        .messages({
+            'string.base': 'Password should be a string',
+            'string.empty': 'Password is required',
+            'string.pattern.base': 'Password must contain at least one letter, one number, and be at least 6 characters long'
+        })
+})
+
+export {validateRegisterSchema,validateloginSchema,validateUpdatePassword};
