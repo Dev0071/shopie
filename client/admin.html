@@ -16,6 +16,7 @@
     <h1>Product Management</h1>
 
 
+    <div class="errorupdate"></div>
     <div class="forms-container">
         
         <!-- Image Upload Form -->
@@ -24,16 +25,17 @@
             <label for="image-upload">Upload an Image:</label>
             <input type="file" id="image-upload" accept="image/*">
             <button type="button" id="upload-button">Upload Image</button>
+            <!-- Display Uploaded Image URL -->
+            <div id="image-url-container" style="display: none;">
+                <h2>Uploaded Image URL:</h2>
+                <p id="image-url"></p>
+            </div>
             <button id="copy-url-button">Copy</button>
         </form>
 
-        <!-- Display Uploaded Image URL -->
-        <div id="image-url-container" style="display: none;">
-            <h2>Uploaded Image URL:</h2>
-            <p id="image-url"></p>
-        </div>
-        <!-- Add Product Form -->
 
+
+        <!-- Add Product Form -->
         <form id="add-product-form">
             <h2>Add Product</h2>
             <p class="error"></p>
@@ -42,9 +44,9 @@
             <label for="product-description">Product Description:</label>
             <textarea id="product-description" required></textarea>
             <label for="product-price">Price:</label>
-            <input type="number" id="product-price" required>
+            <input type="text" id="product-price" required>
             <label for="product-quantity">Quantity:</label>
-            <input type="number" id="product-quantity" required>
+            <input type="text" id="product-quantity" required>
             <label for="product-image">Product Image:</label>
             <input type="text" id="product-image" accept="image/*" required>
             <label for="product-category">Product Category:</label>
@@ -60,12 +62,44 @@
         </form>
     </div>
 
+    <!-- Modal for updating a product -->
+    <div id="update-product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Product</h2>
+            <form id="update-product-form">
+                <input type="hidden" id="update-product-id">
+                <label for="update-product-name">Product Name:</label>
+                <input type="text" id="update-product-name" required>
+                <label for="update-product-description">Product Description:</label>
+                <textarea id="update-product-description" required></textarea>
+                <label for="update-product-price">Price:</label>
+                <input type="text" id="update-product-price" required>
+                <label for="update-product-quantity">Quantity:</label>
+                <input type="text" id="update-product-quantity" required>
+                <label for="update-product-image">Product Image:</label>
+                <input type="text" id="update-product-image" accept="image/*" required>
+                <label for="update-product-category">Product Category:</label>
+                <select id="update-product-category" required>
+                    <option value="">Select a category</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Books">Books</option>
+                    <option value="Clothes">Clothes</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Cosmetics">Cosmetics</option>
+                </select>
+                <button type="submit" id="update-product-btn">Update Product</button>
+            </form>
+        </div>
+    </div>
+
+
     <!-- Product List -->
     <div id="product-list" class="product-list">
         <!-- Product items will be displayed here -->
     </div>
 
-    <!-- Add this HTML code to your admin page -->
+    <!-- products table -->
     <table id="product-table">
         <thead>
             <tr>

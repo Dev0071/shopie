@@ -1,4 +1,4 @@
-const productsArray = [];
+// const productsArray = [];
 const addProductForm = document.getElementById('add-product-form');
 const productList = document.getElementById('product-list');
 const uploadButton = document.getElementById('upload-button');
@@ -6,6 +6,7 @@ const imageUrlContainer = document.getElementById('image-url-container');
 const imageUrlElement = document.getElementById('image-url');
 const imageUploadInput = document.getElementById('image-upload');
 const addProductButton = document.getElementById('add-product-btn');
+const errorp = document.querySelector('.errorupdate');
 
 // addProductForm.addEventListener('submit', addProduct);
 // Assuming you have a form with appropriate input fields for adding a product
@@ -20,7 +21,7 @@ addProductForm.addEventListener('submit', async event => {
 	const productQuantity = document.getElementById('product-quantity').value;
 	const productImage = document.getElementById('product-image').value;
 	const productCategory = document.getElementById('product-category').value;
-	const errordiv = document.querySelector('.error');
+	// const errordiv = document.getElementById('error-div');
 
 	const productData = {
 		product_name: productName,
@@ -45,30 +46,34 @@ addProductForm.addEventListener('submit', async event => {
 		});
 
 		if (response.ok) {
-			const responseData = await response.json();
-			errordiv.textContent = responseData.message;
-			errordiv.style.color = 'green';
+			// const responseData = await response.json();
+			errorp.style.display = 'block';
+			errorp.textContent = 'Product added successfully';
+			errorp.style.color = 'green';
 			// console.log('Product added successfully:', responseData);
 			// You can update the UI or perform other actions here
 		} else {
 			const errorData = await response.json();
 			console.error('Error adding product:', errorData);
-			errordiv.textContent = errorData.message;
-			errordiv.style.color = 'red';
+			errorp.style.display = 'block';
+			errorp.textContent = 'Error adding product';
+			errorp.style.color = 'red';
 			// Handle the error and display a message to the user
 		}
 	} catch (error) {
 		console.error('Error:', error);
-		errordiv.textContent = error.message;
-		errordiv.style.color = 'red';
+		errorp.style.display = 'block';
+		errorp.textContent = 'Error adding product';
+		errorp.style.color = 'red';
 		// Ha	ndle any network or other errors
 	}
 	clearFormFields();
 
+	refreshProductTable();
 	setTimeout(() => {
-		errordiv.textContent = '';
+		errorp.textContent = '';
+		errorp.style.display = 'none';
 	}, 3000);
-	refreshProductTable()
 });
 
 const clearFormFields = () => {
@@ -83,8 +88,6 @@ const clearFormFields = () => {
 /**
  * Create products table
  */
-
-// Update your admin.js code as follows:
 
 // Function to fetch all products from the backend
 async function fetchProducts() {
@@ -121,7 +124,7 @@ async function refreshProductTable() {
                 <td class="product-image"><img style='width: 100px;' src="${product.product_image}" alt="Product 1 Image"></td>
                 <td>
                     <button class="delete-button" onclick="deleteProduct('${product.product_id}')">Delete</button>
-                    <button class="update-button" >Update</button>
+                    <button class="update-button" onclick = "showUpdateModal('${product.product_id}','${product.product_name}', '${product.product_description}', ${product.price}, ${product.product_quantity}, '${product.product_category}', '${product.product_image}')" >Update</button>
                 </td>
             </tr>
         `;
@@ -143,69 +146,27 @@ async function deleteProduct(productId) {
 		if (response.ok) {
 			// Refresh the product table after successful deletion
 			refreshProductTable();
+			errorp.style.display = 'block';
+			errorp.textContent = 'Product deleted successfully';
+			errorp.style.color = 'green';
 		} else {
 			const responseData = await response.json();
 			console.error('Error deleting product:', responseData.message);
+			errorp.style.display = 'block';
+			errorp.textContent = 'Error deleting product';
+			errorp.style.color = 'red';
 		}
 	} catch (error) {
 		console.error('Error deleting product:', error);
 	}
+	setTimeout(() => {
+		errorp.textContent = '';
+		errorp.style.display = 'none';
+	}, 3000);
 }
 
 // Call this function to populate the product table on page load
-refreshProductTable(); 
-
-/**
- * 
- */
-
-// Add an event listener to the document to handle dynamic update buttons
-// document.addEventListener('click', event => {
-//     if (event.target.classList.contains('update-button')) {
-//         const productRow = event.target.closest('tr');
-//         const productName = productRow.querySelector('.product-name').textContent;
-//         const productDescription = productRow.querySelector('.product-description').textContent;
-//         const productPrice = productRow.querySelector('.product-price').textContent;
-//         const productQuantity = productRow.querySelector('.product-quantity').textContent;
-//         const productCategory = productRow.querySelector('.product-category').textContent;
-//         const productImage = productRow.querySelector('.product-image')
-
-//         // Populate the update form with extracted values
-//         document.getElementById('product-name').value = productName;
-//         document.getElementById('product-description').value = productDescription;
-//         document.getElementById('product-price').value = productPrice;
-//         document.getElementById('product-quantity').value = productQuantity;
-//         document.getElementById('product-category').value = productCategory;
-//         document.getElementById('product-image').value = productImage;
-//addProductButton.textContent = 'Update Product';
-//     }
-//   if (event.target.textContent === 'Update Product') { }
-// 
-// 
-//
-//	 	
-// });
-
-// Update product details form submit event listener
-// document.getElementById('update-product-form').addEventListener('submit', async event => {
-//     event.preventDefault();
-
-//     // Get the updated product details from the form
-//     const updatedProductName = document.getElementById('update-product-name').value;
-//     const updatedProductDescription = document.getElementById('update-product-description').value;
-//     const updatedProductPrice = document.getElementById('update-product-price').value;
-//     const updatedProductQuantity = document.getElementById('update-product-quantity').value;
-//     const updatedProductCategory = document.getElementById('update-product-category').value;
-//     const updatedProductImage = document.getElementById('update-product-image').value;
-
-//     // Perform the update process (send updated data to the server)
-//     // ...
-
-//     // Clear the update form fields
-//     document.getElementById('update-product-form').reset();
-// });
-
-
+refreshProductTable();
 
 /**
  * Upload image
@@ -267,16 +228,138 @@ const copyUrlButton = document.getElementById('copy-url-button');
 
 copyUrlButton.addEventListener('click', copyImageUrl);
 
-function copyImageUrl() {
+async function copyImageUrl() {
 	const imageUrlElement = document.getElementById('image-url');
 	const imageUrl = imageUrlElement.textContent;
 
-	const textarea = document.createElement('textarea');
-	textarea.value = imageUrl;
-	document.body.appendChild(textarea);
-	textarea.select();
-	document.execCommand('copy');
-	document.body.removeChild(textarea);
+	try {
+		await navigator.clipboard.writeText(imageUrl);
+		// alert('Image URL copied to clipboard!');
+		errorp.style.display = 'block';
+		errorp.textContent = 'Image URL copied to clipboard!';
+		errorp.style.color = 'green';
+	} catch (error) {
+		console.error('Error copying image URL:', error);
+		// Handle the error if the copy operation fails
+	}
+	setTimeout(() => {
+		errorp.textContent = '';
+		errorp.style.display = 'none';
+	},3000);
+}
 
-	alert('Image URL copied to clipboard!');
+
+/**
+ * update a product
+ */
+
+// Get the update product modal and its content
+const updateProductModal = document.getElementById('update-product-modal');
+const updateProductForm = document.getElementById('update-product-form');
+const closeModalSpan = updateProductModal.querySelector('.close');
+
+// Function to show the update product modal
+
+function showUpdateModal(
+	product_id,
+	productName,
+	productDescription,
+	productPrice,
+	productQuantity,
+	productCategory,
+	productImage,
+) {
+	// Populate the form fields with the provided product data
+	document.getElementById('update-product-id').value = product_id;
+	document.getElementById('update-product-name').value = productName;
+	document.getElementById('update-product-description').value = productDescription;
+	document.getElementById('update-product-price').value = productPrice;
+	document.getElementById('update-product-quantity').value = productQuantity;
+	document.getElementById('update-product-category').value = productCategory;
+	document.getElementById('update-product-image').value = productImage;
+
+	// Show the modal
+	updateProductModal.style.display = 'block';
+}
+
+// Add event listener to close modal button
+closeModalSpan.addEventListener('click', () => {
+	updateProductModal.style.display = 'none';
+});
+
+// Close the modal when clicking outside the modal content
+window.addEventListener('click', event => {
+	if (event.target === updateProductModal) {
+		updateProductModal.style.display = 'none';
+	}
+});
+
+// Handle form submission for updating the product
+updateProductForm.addEventListener('submit', event => {
+	event.preventDefault();
+
+	// Get the updated product data from the form fields
+	const productId = document.getElementById('update-product-id').value;
+	const updatedProductName = document.getElementById('update-product-name').value;
+	const updatedProductDescription = document.getElementById('update-product-description').value;
+	const updatedProductPrice = parseFloat(document.getElementById('update-product-price').value);
+	const updatedProductQuantity = parseInt(document.getElementById('update-product-quantity').value);
+	const updatedProductCategory = document.getElementById('update-product-category').value;
+	const updatedProductImage = document.getElementById('update-product-image').value;
+
+	const updatedProductData = {
+		product_name: updatedProductName,
+		product_description: updatedProductDescription,
+		price: updatedProductPrice,
+		product_quantity: updatedProductQuantity,
+		product_category: updatedProductCategory,
+		product_image: updatedProductImage,
+	};
+	console.log(updatedProductData);
+	console.log(productId);
+	updateProduct(productId, updatedProductData);
+	// Close the modal after updating
+	updateProductModal.style.display = 'none';
+});
+
+/**
+ * function to update product
+ */
+
+async function updateProduct(productId, updatedProductData) {
+	const token = localStorage.getItem('token');
+
+	try {
+		const response = await fetch(`http://localhost:3000/api/product/${productId}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(updatedProductData),
+		});
+
+		if (response.ok) {
+			// Refresh the product table after successful update
+			refreshProductTable();
+			errorp.style.display = 'block';
+			errorp.textContent = 'Product updated successfully';
+			errorp.style.color = 'green';
+		
+		} else {
+			const errorData = await response.json();
+			console.error('Error updating product:', errorData);
+			errorp.style.display = 'block';
+			errorp.textContent = 'Error updating product';
+			errorp.style.color = 'red';
+			// Handle the error and display a message to the user
+		}
+		setTimeout(() => {
+			errorp.textContent = '';
+			errorp.style.display = 'none';
+		}, 3000);
+	} catch (error) {
+		console.error('Error:', error);
+		// Handle any network or other errors
+	}
 }
