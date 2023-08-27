@@ -186,7 +186,7 @@ async function fetchAndDisplayProducts() {
 				const productDiv = document.createElement('div');
 				productDiv.className = 'product';
 				productDiv.innerHTML = `
-                    <div onClick = "openModal('${product.product_id}')" class="product-image">
+                    <div onClick = "fetchProductById('${product.product_id}')" class="product-image">
                         <img src="${product.product_image}" alt="">
                     </div>
                     <div class="product-info">
@@ -245,6 +245,14 @@ async function addToCart(productID) {
 		if (response.ok) {
 			const responseData = await response.json();
 			// Show success message or update cart count
+			const cartNotification = document.getElementById('cart-notification');
+			cartNotification.style.display = 'block';
+			cartNotification.textContent = 'Item added to cart!';
+			cartNotification.style.color = 'green';
+			setTimeout(() => {
+				cartNotification.textContent = '';
+				cartNotification.style.display = 'none';
+			}, 3000);
 			console.log(responseData.message);
 		} else {
 			const errorData = await response.json();
@@ -262,7 +270,7 @@ async function addToCart(productID) {
 // Define a function to fetch and display cart items
 async function fetchAndDisplayCartItems() {
 	try {
-		const response = await fetch('http://localhost:3000/api/cart/items'); 
+		const response = await fetch('http://localhost:3000/api/cart/items');
 		const data = await response.json();
 
 		if (data.status === 'success') {
@@ -304,28 +312,27 @@ async function fetchAndDisplayCartItems() {
  * remove from cart
  */
 async function removeFromCart(productID) {
-    try {
-        const response = await fetch(`http://localhost:3000/cart/items/${productID}`, {
-            method: 'DELETE',
-        });
+	try {
+		const response = await fetch(`http://localhost:3000/cart/items/${productID}`, {
+			method: 'DELETE',
+		});
 
-        if (response.ok) {
-            // Refresh cart items after removal
-            fetchAndDisplayCartItems();
-        } else {
-            const errorData = await response.json();
-            // Show error message
-            console.error(errorData.message);
-        }
-    } catch (error) {
-        console.error('Error removing product from cart:', error);
-    }
+		if (response.ok) {
+			// Refresh cart items after removal
+			fetchAndDisplayCartItems();
+		} else {
+			const errorData = await response.json();
+			// Show error message
+			console.error(errorData.message);
+		}
+	} catch (error) {
+		console.error('Error removing product from cart:', error);
+	}
 }
 
 /**
  * show and hide product  modal
  */
-
 
 const productModal = document.getElementById('productModal');
 const modalProductImage = document.getElementById('modalProductImage');
@@ -347,15 +354,22 @@ window.addEventListener('click', event => {
 
 // Function to open the modal and display the product details
 /************/
- function openModal (productid) {
-const product =  fetchProductById(productid);
+function openModal(product) {
+	// const product =  fetchProductById(productid);
 
 	modalProductImage.src = product.product_image;
 	modalProductName.textContent = product.product_name;
-	modalProductDescription.textContent = product.description;
+	modalProductDescription.textContent = product.product_description;
 	modalProductPrice.textContent = product.price;
-	modalAddToCartBtn.setAttribute('data-product-id', product.product_id);
+	// modalAddToCartBtn.setAttribute('data-product-id', product.product_id);
 	productModal.style.display = 'block';
+	modalAddToCartBtn.addEventListener(
+		'click',
+		() => {
+			addToCart(product.product_id);
+		},
+		{ once: true },
+	);
 }
 
 /**
@@ -364,27 +378,52 @@ const product =  fetchProductById(productid);
 
 // Function to fetch a single product by its ID
 async function fetchProductById(productID) {
-    try {
-        const response = await fetch(`http://localhost:3000/api/product/${productID}`);
-        const data = await response.json();
+	try {
+		const response = await fetch(`http://localhost:3000/api/product/${productID}`);
+		const data = await response.json();
+		// console.log(data);
 
-        if (data.status === 'success') {
-            const product = data.product;
-            return product;
-        } else {
-            console.error('Error fetching product:', data.message);
-            return null;
-        }
-    } catch (error) {
-        console.error('Error fetching product:', error);
-        return null;
-    }
+		if (data.status === 'success') {
+			const product = data?.product;
+			console.log(product);
+			openModal(product);
+
+			// return product;
+		} else {
+			console.error('Error fetching product:', data.message);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error fetching product:', error);
+		return null;
+	}
 }
-
 
 /**
  * log out and pop up to manage account
  */
+
+const loggout = async () => {
+	try {
+		const response = await fetch('http://localhost:3000/api/user/logout', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (response.ok) {
+			localStorage.clear();
+
+			window.location.href = 'http://127.0.0.1:5500/client/login.html';
+		} else {
+			const errorData = await response.json();
+			console.error(errorData.message);
+		}
+	} catch (error) {
+		console.error('Error logging out:', error);
+	}
+};
 // Get references to the necessary elements
 const userProfileIcon = document.querySelector('.user-icons .material-icons-outlined.person');
 const userProfilePopup = document.getElementById('userProfilePopup');
@@ -393,29 +432,28 @@ const logoutOption = document.getElementById('logout');
 
 // Show user profile popup on clicking the user icon
 userProfileIcon.addEventListener('click', () => {
-    userProfilePopup.style.display = 'block';
+	userProfilePopup.style.display = 'block';
 });
 
 // Close user profile popup on clicking outside or on option
-document.addEventListener('click', (event) => {
-    if (!userProfilePopup.contains(event.target) && event.target !== userProfileIcon) {
-        userProfilePopup.style.display = 'none';
-    }
+document.addEventListener('click', event => {
+	if (!userProfilePopup.contains(event.target) && event.target !== userProfileIcon) {
+		userProfilePopup.style.display = 'none';
+	}
 });
 
 // Handle clicking on "Manage Account" option
 manageAccountOption.addEventListener('click', () => {
-    // Implement logic to navigate to the account management page
-    // You can use window.location.href or other navigation methods
-    // based on your application's routing system.
-    // Example: window.location.href = '/account';
-    userProfilePopup.style.display = 'none';
+	// Implement logic to navigate to the account management page
+	// You can use window.location.href or other navigation methods
+	// based on your application's routing system.
+	// Example: window.location.href = '/account';
+	userProfilePopup.style.display = 'none';
 });
 
 // Handle clicking on "Log Out" option
 logoutOption.addEventListener('click', () => {
-    // Implement logic to log out the user
-    // You can clear session data, reset authentication status, etc.
-    // Example: performLogout();
-    userProfilePopup.style.display = 'none';
+	loggout();
+	userProfilePopup.style.display = 'none';
 });
+

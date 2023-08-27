@@ -5,6 +5,7 @@ const uploadButton = document.getElementById('upload-button');
 const imageUrlContainer = document.getElementById('image-url-container');
 const imageUrlElement = document.getElementById('image-url');
 const imageUploadInput = document.getElementById('image-upload');
+const addProductButton = document.getElementById('add-product-btn');
 
 // addProductForm.addEventListener('submit', addProduct);
 // Assuming you have a form with appropriate input fields for adding a product
@@ -117,7 +118,7 @@ async function refreshProductTable() {
                 <td class="product-price">$${product.price}</td>
                 <td class ="product-quantity">${product.product_quantity}</td>
                 <td class= "product-category">${product.product_category}</td>
-                <td class="product-image">${product.product_image}</td>
+                <td class="product-image"><img style='width: 100px;' src="${product.product_image}" alt="Product 1 Image"></td>
                 <td>
                     <button class="delete-button" onclick="deleteProduct('${product.product_id}')">Delete</button>
                     <button class="update-button" >Update</button>
@@ -152,7 +153,7 @@ async function deleteProduct(productId) {
 }
 
 // Call this function to populate the product table on page load
-refreshProductTable();
+refreshProductTable(); 
 
 /**
  * 
@@ -170,13 +171,19 @@ refreshProductTable();
 //         const productImage = productRow.querySelector('.product-image')
 
 //         // Populate the update form with extracted values
-//         document.getElementById('update-product-name').value = productName;
-//         document.getElementById('update-product-description').value = productDescription;
-//         document.getElementById('update-product-price').value = productPrice;
-//         document.getElementById('update-product-quantity').value = productQuantity;
-//         document.getElementById('update-product-category').value = productCategory;
-//         document.getElementById('update-product-image').value = productImage;
+//         document.getElementById('product-name').value = productName;
+//         document.getElementById('product-description').value = productDescription;
+//         document.getElementById('product-price').value = productPrice;
+//         document.getElementById('product-quantity').value = productQuantity;
+//         document.getElementById('product-category').value = productCategory;
+//         document.getElementById('product-image').value = productImage;
+//addProductButton.textContent = 'Update Product';
 //     }
+//   if (event.target.textContent === 'Update Product') { }
+// 
+// 
+//
+//	 	
 // });
 
 // Update product details form submit event listener

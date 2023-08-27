@@ -35,7 +35,7 @@ const registerUser = async () => {
 
 			// redirect to login page
 			setTimeout(() => {
-				window.location.href = 'http://127.0.0.1:5500/client/index.html'; // Replace with your homepage URL
+				window.location.href = 'http://127.0.0.1:5500/client/index.html';
 			}, 1000);
 		} else {
 			const responseData = await response.json();

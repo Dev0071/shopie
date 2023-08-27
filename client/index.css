@@ -682,7 +682,19 @@ main {
     cursor: pointer;
 }
 
-/* Add additional styles to suit your design */
+/* Add styles for the cart notification */
+.cart-notification {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none;
+}
 
 
 /* media queries */
@@ -893,5 +905,8 @@ main {
         gap: 1rem;
         margin-top: 1rem;
     }
-
+   .modal-product{
+       flex-direction: column;
+       align-items: center;
+   }
 }
