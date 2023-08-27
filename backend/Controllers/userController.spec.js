@@ -9,10 +9,12 @@ const res = {
 };
 
 jest.mock("../DBHelpers/index.js");
-
+jest.mock('joi');
 describe("User Controller Tests", () => {
-
     it ("Should Add User User And return A token", async() => {
+        jest.mock('uuid', () => ({
+            v4: jest.fn(() => 'mocked-user-id'),
+        }));
         jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce("loremipsumloremipsum");
 
         const req = {
@@ -23,9 +25,20 @@ describe("User Controller Tests", () => {
             }
         }
         
-        const response = DB.exec()
+        jest.mock('../DBHelpers/index.js', () => ({
+            exec: jest.fn(() => ({
+              recordset: [{ user_id: loremipsumloremipsum, u_name: 'Wonder Woman', is_admin: false }],
+              rowsAffected: [1],
+            }))
+        })
+
+    )
+       
+       
     })
-   
 
 
-})
+
+
+}
+        

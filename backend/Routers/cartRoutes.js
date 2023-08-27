@@ -3,9 +3,9 @@ import {addToCart,getCartItems,removeItemFromCart,emptyCart,removeallSuchItemsFr
 
 const cartRouter = Router();
 
-cartRouter.post('/:product_id', addToCart)
-cartRouter.get('/items', getCartItems)
-cartRouter.post('/items/:product_id', removeItemFromCart)
+cartRouter.post('/:product_id/', addToCart)
+cartRouter.get('/items/:session_id/:user_id?/', getCartItems)
+cartRouter.post('/item/:product_id/', removeItemFromCart)
 cartRouter.post('/all/items', emptyCart)
 cartRouter.post('/all/items/:product_id',removeallSuchItemsFromCart)
 
