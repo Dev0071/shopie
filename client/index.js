@@ -1,3 +1,4 @@
+
 /**
  * show and hide the search input when the search icon is clicked on the navbar
  */
@@ -234,70 +235,130 @@ async function addToCart(productID) {
 	// const productID = event.target.getAttribute('data-product-id');
 	console.log(productID);
 
-	try {
-		const response = await fetch(`http://localhost:3000/api/cart/${productID}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+	const session_id = localStorage.getItem('session_id');
+	console.log(session_id);
 
-		if (response.ok) {
-			const responseData = await response.json();
+	try {
+
+		if(!session_id){
+			const res = await fetch(`http://localhost:3000/api/cart/${productID}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+	
+			if (res.ok) {
+				const responseData = await res.json();
+				const session_id = responseData.sess;
+			// console.log(session_id);
+				localStorage.setItem('session_id', session_id);
 			// Show success message or update cart count
-			const cartNotification = document.getElementById('cart-notification');
-			cartNotification.style.display = 'block';
-			cartNotification.textContent = 'Item added to cart!';
-			cartNotification.style.color = 'green';
-			setTimeout(() => {
-				cartNotification.textContent = '';
-				cartNotification.style.display = 'none';
-			}, 3000);
-			console.log(responseData.message);
+				const cartNotification = document.getElementById('cart-notification');
+				cartNotification.style.display = 'block';
+				cartNotification.textContent = 'Item added to cart!';
+				cartNotification.style.color = 'green';
+				setTimeout(() => {
+					cartNotification.textContent = '';
+					cartNotification.style.display = 'none';
+				}, 3000);
+				console.log(responseData.message);
+
+			}
 		} else {
-			const errorData = await response.json();
-			// Show error message
-			console.error(errorData.message);
+			const response = await fetch(`http://localhost:3000/api/cart/${productID}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({session_id}),
+			});
+	
+			if (response.ok) {
+				const responseData = await response.json();
+				const cartNotification = document.getElementById('cart-notification');
+				cartNotification.style.display = 'block';
+				cartNotification.textContent = 'Item added to cart!';
+				cartNotification.style.color = 'green';
+				setTimeout(() => {
+					cartNotification.textContent = '';
+					cartNotification.style.display = 'none';
+				}, 3000);
+				console.log(responseData.message);
 		}
-	} catch (error) {
+	}
+	const cartCount = document.querySelector('#cart-counter');
+	cartCount.textContent = parseInt(cartCount.textContent) + 1;
+		} catch (error) {
 		console.error('Error adding product to cart:', error);
 	}
 }
+
+
+
+
+
+
+
+
+
+
 
 /***
  * fetch cart items
  */
 // Define a function to fetch and display cart items
 async function fetchAndDisplayCartItems() {
+	const session_id = localStorage.getItem('session_id');
+
 	try {
-		const response = await fetch('http://localhost:3000/api/cart/items');
+		const response = await fetch(
+			`http://localhost:3000/api/cart/items/${session_id}`,
+		);
 		const data = await response.json();
+		console.log(data);
 
 		if (data.status === 'success') {
-			const cartItems = data.items;
+			const cartItems = data.products;
 
 			const cartContainer = document.querySelector('.cart-products');
 			cartContainer.innerHTML = ''; // Clear existing cart items
 
 			// Loop through the cart items and create cart item elements
-			cartItems.forEach(item => {
+			cartItems.forEach( async item => {
+				const product = await fetchProductById(item.product_id);
+				// console.log(item.product);
+				const { product_name, product_image, price, product_quantity } = product;
 				const cartItemDiv = document.createElement('div');
 				cartItemDiv.className = 'cart-product';
 				cartItemDiv.innerHTML = `
+                     <div class="cart-product">
+                    <div class="cart-product-image">
+                        <img src='${product_image}'alt="">
+                    </div>
                     <div class="cart-product-info">
-                        <p>${item.product_name}</p>
-                        <div class="units-left">
-                            <button class="counter-btn decrease-btn">-</button>
+                        <p class="description">${product_name}.</p>
+                        <p class="price">${price}</p>
+                        <p class="units-left">
+                            <span class="material-icons-outlined" style="color: red;">
+                                error_outline
+                            </span>
+                            ${product_quantity} items left
+                        </p>
+                        <div class="cart-counter">
+                            <button class="delete-btn" onClick="removeFromCart('${item.product_id}')">
+                                <span class="material-icons-outlined" style="color: red;">
+                                    delete
+                                </span>
+                                Remove</button>
                             <div class="counter-input">
-                                <input type="number" class="quantity-input" value="${item.quantity}" min="1">
-                                <button class="counter-btn increase-btn">+</button>
+                                <button class="increase-counter-btn">-</button>
+                                <p class="product-quantity">${item.combined_quantity}</p>
+                                <button class="decrease-counter-btn">+</button>
                             </div>
                         </div>
                     </div>
-                    <div class="cart-counter">
-                        <p>$ ${item.price}</p>
-                        <button class="delete-btn" onClick="removeFromCart('${item.product_id}')">Remove</button>
-                    </div>
+                </div>
                 `;
 
 				cartContainer.appendChild(cartItemDiv);
@@ -308,13 +369,28 @@ async function fetchAndDisplayCartItems() {
 	}
 }
 
+// increase item in cart
+const increaseCounterBtn = document.querySelector('.increase-counter-btn');
+const decreaseCounterBtn = document.querySelector('.decrease-counter-btn');
+increaseCounterBtn.addEventListener('click', () => {
+	const productQuantity = document.querySelector('.product-quantity');
+	productQuantity.textContent = parseInt(productQuantity.textContent) + 1;
+})
+
+
+
 /**
  * remove from cart
  */
 async function removeFromCart(productID) {
+	const session_id = localStorage.getItem('session_id');
 	try {
 		const response = await fetch(`http://localhost:3000/cart/items/${productID}`, {
 			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ session_id }),
 		});
 
 		if (response.ok) {
@@ -385,10 +461,10 @@ async function fetchProductById(productID) {
 
 		if (data.status === 'success') {
 			const product = data?.product;
-			console.log(product);
+			// console.log(product);
 			openModal(product);
 
-			// return product;
+			return product;
 		} else {
 			console.error('Error fetching product:', data.message);
 			return null;
