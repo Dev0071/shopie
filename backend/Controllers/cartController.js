@@ -74,7 +74,7 @@ export const emptyCart = async(req,res)=>{
     try{
         const session_id = req.body.session_id;
         const user_id = req.body.user_id || null;
-        console.log(session_id)
+        console.log(req.body.user_id);
     await DB.exec('usp_EmptyCart',{user_id, session_id});
         return res.status(200).json({
             status:'success',
