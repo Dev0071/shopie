@@ -14,10 +14,11 @@ Adds a product to the user's shopping cart.
 
 - **Parameters:**
   - `product_id` (string, required): The ID of the product to be added to the cart.
-  - `user_id` (string, optional): The ID of the user (if authenticated).
+ 
 
 - **Request Body:**
   - `session_id` (string, optional): The session ID. If not provided, a new session will be created.
+  - `user_id` (string, optional): The ID of the user (if authenticated).
 
 **Response:**
 

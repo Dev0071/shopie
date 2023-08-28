@@ -16,12 +16,13 @@ describe("User Controller Tests", () => {
             v4: jest.fn(() => 'mocked-user-id'),
         }));
         jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce("loremipsumloremipsum");
-
+        jest.spyOn(joi).mockResolvedValueOnce()
         const req = {
             body: {
                 u_name: "Wonder Woman",
                 email: "wonderwoman@gmail.com",
-                password: "passtest1"
+                password: "passtest1",
+                session_id: "232"
             }
         }
         
@@ -30,7 +31,10 @@ describe("User Controller Tests", () => {
               recordset: [{ user_id: loremipsumloremipsum, u_name: 'Wonder Woman', is_admin: false }],
               rowsAffected: [1],
             }))
-        })
+        }),
+
+        await registerUser(req,res),
+        expect(res.status).toHaveBeenCalledWith(201)
 
     )
        
@@ -40,5 +44,5 @@ describe("User Controller Tests", () => {
 
 
 
-}
+});
         
