@@ -31,7 +31,6 @@ describe('Admin page', () => {
 		cy.get('#product-table tbody').should('contain', 'New Product');
 	});
 	it('should delete a product from the list', () => {
-		// cy.visit('/path-to-your-admin-page'); 
 		cy.get('.product-name').first().invoke('text').as('productName');
 		cy.get('.delete-button').first().click();
 		// cy.get('.swal-button--danger').click(); 
