@@ -66,7 +66,7 @@ export const registerUser = async(req,res)=>{
 
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         if (error.number == 2627 && error.message.includes('duplicate key value')) {
             return res.status(409).json(
                 {
