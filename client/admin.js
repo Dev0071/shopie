@@ -8,6 +8,7 @@ const imageUploadInput = document.getElementById('image-upload');
 const addProductButton = document.getElementById('add-product-btn');
 const errorp = document.querySelector('.errorupdate');
 
+
 // addProductForm.addEventListener('submit', addProduct);
 // Assuming you have a form with appropriate input fields for adding a product
 // const addProductForm = document.getElementById('add-product-form');
@@ -166,7 +167,6 @@ async function deleteProduct(productId) {
 }
 
 // Call this function to populate the product table on page load
-refreshProductTable();
 
 /**
  * Upload image
@@ -234,17 +234,15 @@ async function copyImageUrl() {
 
 	try {
 		await navigator.clipboard.writeText(imageUrl);
-		// alert('Image URL copied to clipboard!');
 		errorp.style.display = 'block';
 		errorp.textContent = 'Image URL copied to clipboard!';
 		errorp.style.color = 'green';
 	} catch (error) {
 		console.error('Error copying image URL:', error);
-		// Handle the error if the copy operation fails
 	}
 	setTimeout(() => {
 		errorp.textContent = '';
-		errorp.style.display = 'none';
+		// errorp.style.display = 'none';
 	}, 3000);
 }
 
@@ -376,4 +374,6 @@ toggleAddProductFormButton.addEventListener('click', () => {
     }
 });
 
-// Rest of your code...
+refreshProductTable();
+
+
