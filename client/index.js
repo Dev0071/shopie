@@ -8,11 +8,73 @@ const mobileMenu = document.querySelector('.mobile-menu');
 const cartIcon = document.getElementById('cart');
 const cartContainer = document.querySelector('.cart-container');
 const mainDiv = document.getElementById('main');
+const desktopSearchInput = document.getElementById('desktop-search');
 
 searchIcon.addEventListener('click', () => {
 	searchInput.parentElement.classList.toggle('show-search');
 	searchInput.focus();
 });
+/**
+ * search product
+*/
+console.log(desktopSearchInput.value);
+desktopSearchInput.addEventListener('input', () => {
+	// console.log(desktopSearchInput.value);
+	searchProduct(desktopSearchInput.value);
+});
+searchInput.addEventListener('input', ()=> searchProduct(searchInput.value));
+
+
+const searchProduct = async (query) => {
+	// let query = searchInput.value;
+	// console.log(query);
+	const response = await fetch(`http://localhost:3000/api/product/search/${query}`);
+	const data = await response.json();
+	console.log(data);
+	if (data.status === 'success') {
+		const products = data.products;
+		const productsContainer = document.querySelector('.products');
+		// Clear existing products
+		productsContainer.innerHTML = '';
+		// Loop through the products and create product elements
+		products.forEach(product => {
+			const productDiv = document.createElement('div');
+			productDiv.className = 'product';
+			productDiv.innerHTML = `
+					<div class="product-image">
+						<img src="${product.product_image}" onClick = "openModal('${product.product_id}')"  alt="">
+					</div>
+					<div class="product-info">
+						<div class="product-info-text">
+							<p>${product.product_name}</p>
+							<div class="rating">
+								<span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
+									star_outline
+								</span>
+								<span class="material-icons-outlined" style="color: rgb(241, 180, 67);">
+									star_outline
+								</span>
+							</div>
+							<p>$ ${product.price}</p>
+						</div>
+						<div class="product-icons">
+							<span class="material-icons-outlined">
+								favorite_border
+							</span>
+							<span class="material-icons-outlined" onClick="addToCart('${product.product_id}')">
+								shopping_cart
+							</span>
+						</div>
+					</div>
+				`;
+
+			// Append the product to the products container
+			productsContainer.appendChild(productDiv);
+		});
+	}
+};
+
+// desktopSearchInput.addEventListener('input', searchProduct);
 
 /**
  * show and hide the mobile menu when the menu icon is clicked on the navbar
@@ -31,6 +93,7 @@ cartIcon.addEventListener('click', () => {
 	cartContainer.style.display = 'block';
 	mainDiv.style.display = 'none';
 	displayCartItems();
+	calculateCartTotal();
 });
 closeCartBtn.addEventListener('click', () => {
 	cartContainer.style.display = 'none';
@@ -124,7 +187,7 @@ async function fetchAndDisplayProductsByCategory(category) {
 				productDiv.className = 'product';
 				productDiv.innerHTML = `
                     <div class="product-image">
-                        <img src="${product.product_image}" alt="">
+                        <img src="${product.product_image}" onClick = "openModal('${product.product_id}')"  alt="">
                     </div>
                     <div class="product-info">
                         <div class="product-info-text">
@@ -143,7 +206,7 @@ async function fetchAndDisplayProductsByCategory(category) {
                             <span class="material-icons-outlined">
                                 favorite_border
                             </span>
-                            <span class="material-icons-outlined">
+                            <span class="material-icons-outlined" onClick="addToCart('${product.product_id}')">
                                 shopping_cart
                             </span>
                         </div>
@@ -294,6 +357,9 @@ async function addToCart(productID) {
 const setCartCount = async () => {
 	const cartCount = document.querySelector('#cart-counter');
 	const products = await fetchCartItems();
+	if (products === undefined) {
+		cartCount.textContent = 0;
+	}
 	const cartItems = products.length;
 	console.log('items in cart', cartItems);
 	cartCount.textContent = cartItems;
@@ -366,7 +432,7 @@ const displayCartItems = async () => {
                                 </span>
                                 Remove</button>
                             <div class="counter-input">
-                                <button class="increase-counter-btn" onClick="increaseCartItemQuantity()">+</button>
+                                <button class="increase-counter-btn" onClick="increaseCartItemQuantity('${item.product_id}')">+</button>
                                 <p class="product-quantity">${item.quantity}</p>
                                 <button class="decrease-counter-btn" onClick="decreaseCartItemQuantity('${item.product_id}')">-</button>
                             </div>
@@ -377,8 +443,10 @@ const displayCartItems = async () => {
 
 			cartContainer.appendChild(cartItemDiv);
 		});
+		calculateCartTotal();
 	} else {
 		const emptyCartMessage = document.createElement('p');
+		emptyCartMessage.className = 'empty-cart-message';
 		emptyCartMessage.textContent = 'Cart is empty';
 		cartContainer.appendChild(emptyCartMessage);
 	}
@@ -386,18 +454,61 @@ const displayCartItems = async () => {
 
 //increaseCcartItemQuantity
 
-const increaseCartItemQuantity = () => {
+const increaseCartItemQuantity = async product_id => {
 	const productQuantity = document.querySelector('.product-quantity');
+	await addToCart(product_id);
+	console.log(product_id);
 	productQuantity.textContent = parseInt(productQuantity.textContent) + 1;
+	await fetchCartItems();
+	await displayCartItems();
 };
 const decreaseCartItemQuantity = async product_id => {
 	console.log(product_id);
+
 	const productQuantity = document.querySelector('.product-quantity');
+	await removeItemFromCart(product_id);
 	productQuantity.textContent = parseInt(productQuantity.textContent) - 1;
 
 	if (parseInt(productQuantity.textContent) === 0) {
 		await removeFromCart(product_id);
 	}
+	setCartCount();
+	await displayCartItems();
+	await fetchCartItems();
+};
+
+const removeItemFromCart = async product_id => {
+	const session_id = localStorage.getItem('session_id');
+	const user = localStorage.getItem('user');
+	const user_id = JSON.parse(user).id;
+	try {
+		const response = await fetch(`http://localhost:3000/api/cart/item/${product_id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ session_id, user_id }),
+		});
+		const data = await response.json();
+		console.log(data);
+	} catch (error) {
+		console.error('Error removing product from cart:', error);
+	}
+};
+
+/**
+ * cart  calculation
+ */
+const calculateCartTotal = async () => {
+	const cartItems = await fetchCartItems();
+	const cartTotal = document.querySelector('.cart-total');
+	const allTotals = document.querySelector('.all-total');
+	let total = 0;
+	cartItems.forEach(item => {
+		total += item.price * item.quantity;
+	});
+	cartTotal.textContent = total;
+	allTotals.textContent = total;
 };
 
 /**
@@ -424,6 +535,7 @@ async function removeFromCart(productID) {
 			console.log(data);
 			const cartCount = document.querySelector('#cart-counter');
 			cartCount.textContent = parseInt(cartCount.textContent) - 1;
+			// fetchCartItems();
 			displayCartItems();
 		} else {
 			const errorData = await response.json();
