@@ -245,9 +245,8 @@ async function copyImageUrl() {
 	setTimeout(() => {
 		errorp.textContent = '';
 		errorp.style.display = 'none';
-	},3000);
+	}, 3000);
 }
-
 
 /**
  * update a product
@@ -345,7 +344,6 @@ async function updateProduct(productId, updatedProductData) {
 			errorp.style.display = 'block';
 			errorp.textContent = 'Product updated successfully';
 			errorp.style.color = 'green';
-		
 		} else {
 			const errorData = await response.json();
 			console.error('Error updating product:', errorData);
@@ -363,3 +361,19 @@ async function updateProduct(productId, updatedProductData) {
 		// Handle any network or other errors
 	}
 }
+
+// Get references to the button and the add product form
+const toggleAddProductFormButton = document.getElementById('toggle-add-product-form-btn');
+// const addProductForm = document.getElementById('add-product-form');
+
+// Add click event listener to the button
+toggleAddProductFormButton.addEventListener('click', () => {
+    // Toggle the display property of the add product form
+    if (addProductForm.style.display === 'none') {
+        addProductForm.style.display = 'block';
+    } else {
+        addProductForm.style.display = 'none';
+    }
+});
+
+// Rest of your code...
