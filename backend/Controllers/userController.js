@@ -10,6 +10,7 @@ import { generateAccessToken, transferAnonCart } from '../Middleware/index.js';
 import { sendResetLink } from '../EmailService/sendResetLink.js';
 import dotenv from 'dotenv';
 dotenv.config();
+
 export const registerUser = async (req, res) => {
 	try {
 		const { error } = validateRegisterSchema.validate(req.body);
@@ -74,6 +75,7 @@ export const registerUser = async (req, res) => {
 		});
 	}
 };
+
 
 export const loginUser = async (req, res) => {
 	try {
